@@ -1,7 +1,7 @@
 <template>
-  <div class="relative-position flex flex-center" :class="[`bg-${theme.bgColor}`, `${theme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]" style="max-width: 307px;">
-    <div class="fit text-center q-mb-sm" v-if="theme.modeSwitch">
-      <q-btn-toggle :value="dateRangeMode" @change="dateRangeModeChange" :options="dateRangeModeOptions" :color="theme.bgColor" text-color="grey" :toggle-text-color="theme.color" flat rounded/>
+  <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`, `${currentTheme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]" style="max-width: 310px;">
+    <div class="fit text-center q-mb-sm" v-if="currentTheme.modeSwitch">
+      <q-btn-toggle :value="dateRangeMode" @change="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat rounded/>
     </div>
     <div class="time-range-input__wrapper q-mb-sm">
       <flat-pickr
@@ -12,7 +12,7 @@
     </div>
     <div v-if="dateRangeMode === DATE_RANGE_MODE_CURRENT" class="time-range-input__wrapper q-mb-sm row">
       <div class="time-range-input__time wrapper__begin col-5">
-        <div class="time__label" :class="[`text-${theme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
+        <div class="time__label" :class="[`text-${currentTheme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
         <flat-pickr
           :value="currentBeginTime"
           @input="beginTimeChangeHandler"
@@ -25,9 +25,9 @@
           }"
         />
       </div>
-      <div class="col-2 text-center" :class="[`text-${theme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
+      <div class="col-2 text-center" :class="[`text-${currentTheme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
       <div class="time-range-input__time wrapper__end col-5">
-        <div class="time__label" :class="[`text-${theme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
+        <div class="time__label" :class="[`text-${currentTheme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
         <flat-pickr
           :value="currentEndTime"
           @input="endTimeChangeHandler"
@@ -85,7 +85,14 @@ export default {
   },
   data () {
     let currentDateRangeModel = this.value.map(timestamp => new Date(timestamp))
+    let defaultTheme = {
+      color: 'dark',
+      bgColor: 'white',
+      modeSwitch: true
+    }
     return {
+      defaultTheme,
+      currentTheme: Object.assign({}, defaultTheme, this.theme),
       currentDateRangeModel,
       dateRangeConfig: {
         mode: 'single',
@@ -223,6 +230,9 @@ export default {
         this.dateRangeModeChange(mode)
       },
       immediate: true
+    },
+    theme (theme) {
+      this.currentTheme = Object.assign({}, this.defaultTheme, theme)
     }
   },
   components: { flatPickr }

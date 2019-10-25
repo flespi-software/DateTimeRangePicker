@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <date-range class="q-ma-sm" v-model="date" :mode="0"/>
+    <date-range class="q-ma-sm" v-model="date" :mode="0" :theme="{color: 'white', bgColor: 'dark'}"/>
     <!-- <vue-flat-pickr class="q-ma-sm" v-model="date"/> -->
   </q-page>
 </template>
