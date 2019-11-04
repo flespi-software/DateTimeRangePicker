@@ -5,9 +5,6 @@
   </q-page>
 </template>
 
-<style>
-</style>
-
 <script>
 import DateRange from '../components/DateRangePicker'
 // import VueFlatPickr from '../components/FlatPickr'

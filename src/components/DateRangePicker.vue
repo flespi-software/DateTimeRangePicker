@@ -1,7 +1,7 @@
 <template>
   <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`, `${currentTheme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]" style="max-width: 310px;">
     <div class="fit text-center q-mb-sm" v-if="currentTheme.modeSwitch">
-      <q-btn-toggle :value="dateRangeMode" @change="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat rounded/>
+      <q-btn-toggle :value="dateRangeMode" @input="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat rounded/>
     </div>
     <div class="time-range-input__wrapper q-mb-sm">
       <flat-pickr
@@ -76,7 +76,7 @@ export default {
       type: Object,
       default () {
         return {
-          color: 'dark',
+          color: 'grey-9',
           bgColor: 'white',
           modeSwitch: true
         }
@@ -86,7 +86,7 @@ export default {
   data () {
     let currentDateRangeModel = this.value.map(timestamp => new Date(timestamp))
     let defaultTheme = {
-      color: 'dark',
+      color: 'grey-9',
       bgColor: 'white',
       modeSwitch: true
     }

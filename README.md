@@ -1,5 +1,5 @@
 # DateTimeRangePicker
-> Date time range picker component based on [Flatpickr](https://flatpickr.js.org) and [Quasar](https://v0-17.quasar-framework.org/). Contains flatpickr wrapper and date-time picker.
+> Date time range picker component based on [Flatpickr](https://flatpickr.js.org) and [Quasar](https://quasar-framework.org/). Contains flatpickr wrapper and date-time picker.
 
 ## Installation
 ```bash

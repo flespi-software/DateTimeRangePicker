@@ -1,10 +1,11 @@
 {
   "name": "datetimerangepicker",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Date-time-range picker based on Quasar Framework",
   "productName": "DateTimeRangePicker",
   "cordovaId": "org.cordova.quasar.app",
-  "author": "Siarhei Buntsevich <scarry92@yandex.ru>",
+  "capacitorId": "",
+  "author": "Sergey Buntsevich <scarry92@yandex.ru>",
   "private": true,
   "main": "dist/datetimerangepicker.js",
   "scripts": {
@@ -14,20 +15,17 @@
     "build": "rollup -c"
   },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "quasar": "^1.0.0",
     "flatpickr": "^4.6.3"
   },
-  "peerDependencies": {
-    "quasar": "^1.2.2",
-    "vue": ">=2"
-  },
   "devDependencies": {
+    "@quasar/app": "^1.0.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
-    "quasar-cli": "^0.17.0",
-    "strip-ansi": "=3.0.1",
     "rollup": "^1.24.0",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-buble": "^0.19.8",
@@ -46,11 +44,6 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ],
-  "resolutions": {
-    "ajv": "6.8.1"
-  }
+    "last 1 version, not dead, ie >= 11"
+  ]
 }
