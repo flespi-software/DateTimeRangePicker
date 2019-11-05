@@ -1,5 +1,7 @@
 <template>
-  <input :key="drawFlag" type="text" data-input :disabled="disabled" @input="onInput">
+  <div :class="[`${currentTheme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]">
+    <input ref="input" :key="drawFlag" type="text" data-input :disabled="disabled" @input="onInput" :style="{display: config && config.inline ? 'none' : ''}">
+  </div>
 </template>
 
 <script>
@@ -40,10 +42,26 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    theme: {
+      type: Object,
+      default () {
+        return {
+          color: 'grey-9',
+          bgColor: 'white',
+          modeSwitch: true
+        }
+      }
     }
   },
   data () {
+    let defaultTheme = {
+      color: 'grey-9',
+      bgColor: 'white',
+      modeSwitch: true
+    }
     return {
+      currentTheme: Object.assign({}, defaultTheme, this.theme),
       fp: null,
       drawFlag: 0
     }
@@ -75,10 +93,10 @@ export default {
       this.drawFlag += 1
     },
     getElem () {
-      return this.config.wrap ? this.$el.parentNode : this.$el
+      return this.config.wrap ? this.$el.parentNode : this.$refs.input
     },
     getValue () {
-      return [...this.fp.selectedDates]
+      return Array.isArray(this.value) ? [...this.fp.selectedDates] : this.fp.selectedDates[0]
     },
     onInput (event) {
       this.$nextTick(() => {
@@ -124,3 +142,23 @@ export default {
   }
 }
 </script>
+<style lang="stylus">
+  .flatpickr__theme-dark
+    $calendarBackground = #565656
+    $calendarBorderColor = darken(#565656, 50%)
+    $monthForeground = #fff
+    $monthBackground = #565656
+    $weekdaysBackground = transparent
+    $weekdaysForeground = #fff
+    $dayForeground = alpha(white, 0.95)
+    $dayHoverBackground = lighten($calendarBackground, 25%)
+    $todayColor = #eee
+    $today_fg_color = #565656
+    $selectedDayBackground = #666
+    @require "../css/themes/datetimerange/flatpickr.styl"
+    .flatpickr-monthSelect-month
+      color $monthForeground
+      &.selected
+        background-color $selectedDayBackground
+        color $monthForeground
+</style>

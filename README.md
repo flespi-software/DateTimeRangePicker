@@ -71,7 +71,7 @@ The component accepts these props:
 | :---             | :---:                                           | :---:                | :---                  |
 | v-model / value  | Array                                           | `[new Date()]`               | RangeValue (required) |
 | mode             | Number{0,1,2,3}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker|
-| theme           | Object                                           | `{color:'dark', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons |
+| theme           | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons |
 
 ### Available events
 The component accepts these props:
@@ -129,6 +129,6 @@ The component accepts these props:
 | v-model / value  | String / Date Object / Array / Timestamp / null | `null`               | Date-picker value (required) |
 | config           | Object                                          | `{wrap:false}`       | Flatpickr configuration [options](https://chmln.github.io/flatpickr/options/)|
 | events           | Array                                           | Array of useful events  | Customise the [events](https://chmln.github.io/flatpickr/events/) to be emitted|
-
+| theme            | Object                                          | `{color:'grey-9', bgColor:'white'}` | `color` - text color, `bgColor` - background color |
 ## License
 [MIT](LICENSE) License

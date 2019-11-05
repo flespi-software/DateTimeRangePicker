@@ -1,5 +1,5 @@
 <template>
-  <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`, `${currentTheme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]" style="max-width: 310px;">
+  <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`]" style="max-width: 310px;">
     <div class="fit text-center q-mb-sm" v-if="currentTheme.modeSwitch">
       <q-btn-toggle :value="dateRangeMode" @input="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat rounded/>
     </div>
@@ -8,6 +8,7 @@
         :value="currentDateRangeModel"
         @input="currentDateRangeModelChangeHandler"
         :config="dateRangeConfig"
+        :theme="currentTheme"
       />
     </div>
     <div v-if="dateRangeMode === DATE_RANGE_MODE_CURRENT" class="time-range-input__wrapper q-mb-sm row">
@@ -23,6 +24,7 @@
             enableSeconds: true,
             inline: true
           }"
+          :theme="currentTheme"
         />
       </div>
       <div class="col-2 text-center" :class="[`text-${currentTheme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
@@ -38,6 +40,7 @@
             enableSeconds: true,
             inline: true
           }"
+          :theme="currentTheme"
         />
       </div>
     </div>
@@ -50,7 +53,6 @@ import flatPickr from './FlatPickr.vue'
 import WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect'
 import MonthSelect from 'flatpickr/dist/plugins/monthSelect/index'
 import 'flatpickr/dist/plugins/monthSelect/style.css'
-// import 'flatpickr/dist/flatpickr.css'
 
 const DATE_RANGE_MODE_DAY = 0,
   DATE_RANGE_MODE_WEEK = 1,
@@ -251,24 +253,6 @@ export default {
     border-right 20px solid transparent
     border-top 20px solid #e8e8e8
     clear both
-  .flatpickr__theme-dark
-    $calendarBackground = #565656
-    $calendarBorderColor = darken(#565656, 50%)
-    $monthForeground = #fff
-    $monthBackground = #565656
-    $weekdaysBackground = transparent
-    $weekdaysForeground = #fff
-    $dayForeground = alpha(white, 0.95)
-    $dayHoverBackground = lighten($calendarBackground, 25%)
-    $todayColor = #eee
-    $today_fg_color = #565656
-    $selectedDayBackground = #666
-    @require "../css/themes/datetimerange/flatpickr.styl"
-    .flatpickr-monthSelect-month
-      color $monthForeground
-      &.selected
-        background-color $selectedDayBackground
-        color $monthForeground
   .time-range-input__wrapper
     width 307px
     .time-range-input__time
