@@ -99,7 +99,7 @@ export default {
       dateRangeConfig: {
         mode: 'single',
         inline: true,
-        maxDate: 'today',
+        maxDate: (new Date()).setHours(23, 59, 59, 999),
         locale: {
           firstDayOfWeek: 1
         }

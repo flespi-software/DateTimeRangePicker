@@ -123,7 +123,7 @@ export default {
     value (newValue, oldValue) {
       if (
         Array.isArray(newValue) && Array.isArray(oldValue) &&
-        newValue.every((val, index) => val && oldValue[index] && val.valueOf() === oldValue[index].valueOf())
+        newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
       ) { return false }
       if (newValue.valueOf() === oldValue.valueOf()) { return false }
       this.fp && this.fp.setDate(newValue, true)
