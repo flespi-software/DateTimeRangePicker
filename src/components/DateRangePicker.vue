@@ -125,7 +125,7 @@ export default {
       this.dateRangeMode = mode
       let config = {
         inline: true,
-        maxDate: 'today',
+        maxDate: (new Date()).setHours(23, 59, 59, 999),
         locale: this.dateRangeConfig.locale
       }
       if (this.dateRangeMode === DATE_RANGE_MODE_DAY) {
@@ -194,10 +194,14 @@ export default {
         let end = this.currentEndTime
         let first = range[0]
         let last = range[1]
-        if (!first || !last) { return undefined }
+        if (!first || !last || !begin || !end) { return undefined }
         first.setHours(begin.getHours(), begin.getMinutes(), begin.getSeconds(), 0)
         last.setHours(end.getHours(), end.getMinutes(), end.getSeconds())
         range = [first, last]
+      }
+      let now = new Date()
+      if (range[1] > now) {
+        range[1] = now
       }
       return range
     },
@@ -210,17 +214,21 @@ export default {
       this.update()
     },
     beginTimeChangeHandler (val) {
-      this.currentBeginTime = val && val[0]
+      this.currentBeginTime = val
       this.update()
     },
     endTimeChangeHandler (val) {
-      this.currentEndTime = val && val[0]
+      this.currentEndTime = val
       this.update()
     }
   },
   watch: {
     value (newValue, oldValue) {
-      if (newValue.every((val, index) => val === oldValue[index])) return
+      if (
+        Array.isArray(newValue) && Array.isArray(oldValue) &&
+        newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
+      ) { return }
+      if (newValue.valueOf() === oldValue.valueOf()) { return false }
       let currentDateRangeModel = newValue.map(timestamp => new Date(timestamp))
       this.currentBeginTime = currentDateRangeModel[0]
       this.currentEndTime = currentDateRangeModel[1]

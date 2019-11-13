@@ -100,7 +100,9 @@ export default {
     },
     onInput (event) {
       this.$nextTick(() => {
-        this.$emit('input', this.getValue())
+        let newValue = this.getValue()
+        if (!this.hasChanges(newValue, this.value)) { return false }
+        this.$emit('input', newValue)
       })
     },
     fpInput () {
@@ -108,6 +110,14 @@ export default {
     },
     onBlur (event) {
       this.$emit('blur', this.getValue())
+    },
+    hasChanges (newValue, oldValue) {
+      if (
+        Array.isArray(newValue) && Array.isArray(oldValue) &&
+        newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
+      ) { return false }
+      if (newValue.valueOf() === oldValue.valueOf()) { return false }
+      return true
     }
   },
   watch: {
@@ -121,11 +131,7 @@ export default {
       }
     },
     value (newValue, oldValue) {
-      if (
-        Array.isArray(newValue) && Array.isArray(oldValue) &&
-        newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
-      ) { return false }
-      if (newValue.valueOf() === oldValue.valueOf()) { return false }
+      if (!this.hasChanges(newValue, oldValue)) { return false }
       this.fp && this.fp.setDate(newValue, true)
     },
     disabled (newState) {

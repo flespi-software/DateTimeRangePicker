@@ -1,7 +1,14 @@
 <template>
   <q-page class="flex flex-center">
-    <date-range class="q-ma-sm" v-model="dateRange" :mode="0" :theme="{color: 'white', bgColor: 'grey-9'}"/>
-    <vue-flat-pickr class="q-ma-sm" v-model="date" :theme="{color: 'white', bgColor: 'grey-9'}" :config="{enableTime: true, time_24hr: true, inline: true}"/>
+    <div class="flex flex-center column q-mr-xl">
+      <div>{{new Date(dateRange[0])}}</div>
+      <div>{{new Date(dateRange[1])}}</div>
+      <date-range class="q-ma-sm" v-model="dateRange" :mode="0" :theme="{color: 'white', bgColor: 'grey-9'}"/>
+    </div>
+    <div class="flex flex-center column">
+      <div>{{date}}</div>
+      <vue-flat-pickr class="q-ma-sm" v-model="date" :theme="{color: 'white', bgColor: 'grey-9'}" :config="{enableTime: true, time_24hr: true, inline: true}"/>
+    </div>
   </q-page>
 </template>
 
@@ -16,6 +23,9 @@ export default {
       date: new Date()
     }
   },
-  components: { DateRange, VueFlatPickr }
+  components: {
+    DateRange,
+    VueFlatPickr
+  }
 }
 </script>
