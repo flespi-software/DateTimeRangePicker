@@ -55,7 +55,8 @@ module.exports = function (ctx) {
         'QItem',
         'QItemSection',
         'QItemLabel',
-        'QBtnToggle'
+        'QBtnToggle',
+        'QMenu'
       ],
 
       directives: [

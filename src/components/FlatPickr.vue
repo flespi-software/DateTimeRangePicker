@@ -1,6 +1,6 @@
 <template>
   <div :class="[`${currentTheme.bgColor === 'white' ? '' : 'flatpickr__theme-dark'}`]">
-    <input ref="input" :key="drawFlag" type="text" data-input :disabled="disabled" @input="onInput" :style="{display: config && config.inline ? 'none' : ''}">
+    <input ref="input" type="text" data-input :disabled="disabled" @input="onInput" :style="{display: config && config.inline ? 'none' : ''}">
   </div>
 </template>
 
@@ -62,8 +62,7 @@ export default {
     }
     return {
       currentTheme: Object.assign({}, defaultTheme, this.theme),
-      fp: null,
-      drawFlag: 0
+      fp: null
     }
   },
   mounted () {
@@ -88,9 +87,6 @@ export default {
         this.fp.destroy()
         this.fp = null
       }
-    },
-    redraw () {
-      this.drawFlag += 1
     },
     getElem () {
       return this.config.wrap ? this.$el.parentNode : this.$refs.input
