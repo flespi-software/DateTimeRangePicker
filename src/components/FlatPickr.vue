@@ -79,6 +79,7 @@ export default {
       })
       safeConfig.defaultDate = this.value || safeConfig.defaultDate
       this.fp = new Flatpickr(this.getElem(), safeConfig)
+      this.initHMSInputs()
       this.fpInput().addEventListener('blur', this.onBlur)
     },
     destroy () {
@@ -88,6 +89,20 @@ export default {
         this.fp = null
       }
     },
+    initHMSInputs () {
+      /* hack for immediate update by input in hour, minute and second inputs */
+      let updateHandler = () => {}
+      this.fp._handlers.forEach((h) => {
+        if (h.handler.toString().indexOf('function updateTime(e)') === 0) {
+          updateHandler = h.handler
+          return true
+        }
+        return false
+      })
+      this.fp.hourElement && this.fp._bind(this.fp.hourElement, 'input', updateHandler, { capture: true })
+      this.fp.minuteElement && this.fp._bind(this.fp.minuteElement, 'input', updateHandler, { capture: true })
+      this.fp.secondElement && this.fp._bind(this.fp.secondElement, 'input', updateHandler, { capture: true })
+    },
     getElem () {
       return this.config.wrap ? this.$el.parentNode : this.$refs.input
     },
@@ -95,11 +110,9 @@ export default {
       return Array.isArray(this.value) ? [...this.fp.selectedDates] : this.fp.selectedDates[0]
     },
     onInput (event) {
-      this.$nextTick(() => {
-        let newValue = this.getValue()
-        if (!this.hasChanges(newValue, this.value)) { return false }
-        this.$emit('input', newValue)
-      })
+      let newValue = this.getValue()
+      if (!this.hasChanges(newValue, this.value)) { return false }
+      this.$emit('input', newValue)
     },
     fpInput () {
       return this.fp.altInput || this.fp.input

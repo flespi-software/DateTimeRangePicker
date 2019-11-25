@@ -7,7 +7,7 @@
     </div>
     <div class="flex flex-center column">
       <div>{{date}}</div>
-      <vue-flat-pickr class="q-ma-sm" v-model="date" :theme="{color: 'white', bgColor: 'grey-9'}" :config="{enableTime: true, time_24hr: true, inline: true}"/>
+      <vue-flat-pickr class="q-ma-sm" v-model="date" :theme="{color: 'white', bgColor: 'grey-9'}" :config="{enableTime: true, time_24hr: true, inline: true, enableSeconds: true}"/>
     </div>
   </q-page>
 </template>
