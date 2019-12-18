@@ -102,6 +102,19 @@ export default {
       this.fp.hourElement && this.fp._bind(this.fp.hourElement, 'input', updateHandler, { capture: true })
       this.fp.minuteElement && this.fp._bind(this.fp.minuteElement, 'input', updateHandler, { capture: true })
       this.fp.secondElement && this.fp._bind(this.fp.secondElement, 'input', updateHandler, { capture: true })
+      let scrollHandler = (e, element) => {
+        let delta = e.deltaY || e.detail || e.wheelDelta
+        let mode = delta < 0
+        if (mode) {
+          element.value = +element.value + 1
+        } else {
+          element.value = +element.value - 1
+        }
+        updateHandler(e)
+      }
+      this.fp.hourElement && this.fp._bind(this.fp.hourElement, 'wheel', (e) => scrollHandler(e, this.fp.hourElement), { capture: true })
+      this.fp.minuteElement && this.fp._bind(this.fp.minuteElement, 'wheel', (e) => scrollHandler(e, this.fp.minuteElement), { capture: true })
+      this.fp.secondElement && this.fp._bind(this.fp.secondElement, 'wheel', (e) => scrollHandler(e, this.fp.secondElement), { capture: true })
     },
     getElem () {
       return this.config.wrap ? this.$el.parentNode : this.$refs.input
