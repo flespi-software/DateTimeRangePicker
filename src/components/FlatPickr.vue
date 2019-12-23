@@ -80,6 +80,9 @@ export default {
       safeConfig.defaultDate = this.value || safeConfig.defaultDate
       this.fp = new Flatpickr(this.getElem(), safeConfig)
       this.fpInput().addEventListener('blur', this.onBlur)
+      this.fp.hourElement && this.fp._bind(this.fp.hourElement, 'blur', this.onBlur, { capture: true })
+      this.fp.minuteElement && this.fp._bind(this.fp.minuteElement, 'blur', this.onBlur, { capture: true })
+      this.fp.secondElement && this.fp._bind(this.fp.secondElement, 'blur', this.onBlur, { capture: true })
     },
     destroy () {
       if (this.fp) {
