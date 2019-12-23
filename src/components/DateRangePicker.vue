@@ -17,13 +17,7 @@
         <flat-pickr
           :value="currentBeginTime"
           @input="beginTimeChangeHandler"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            time_24hr: true,
-            enableSeconds: true,
-            inline: true
-          }"
+          :config="timeConfig"
           :theme="currentTheme"
         />
       </div>
@@ -33,13 +27,7 @@
         <flat-pickr
           :value="currentEndTime"
           @input="endTimeChangeHandler"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            time_24hr: true,
-            enableSeconds: true,
-            inline: true
-          }"
+          :config="timeConfig"
           :theme="currentTheme"
         />
       </div>
@@ -52,6 +40,7 @@ import { date } from 'quasar'
 import flatPickr from './FlatPickr.vue'
 import WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect'
 import MonthSelect from 'flatpickr/dist/plugins/monthSelect/index'
+import ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin'
 import 'flatpickr/dist/plugins/monthSelect/style.css'
 
 const DATE_RANGE_MODE_DAY = 0,
@@ -104,6 +93,14 @@ export default {
           firstDayOfWeek: 1
         }
       },
+      timeConfig: {
+        enableTime: true,
+        noCalendar: true,
+        time_24hr: true,
+        enableSeconds: true,
+        inline: true,
+        minuteIncrement: 1
+      },
       currentBeginTime: currentDateRangeModel[0],
       currentEndTime: currentDateRangeModel[1],
       dateRangeMode: this.mode,
@@ -126,14 +123,15 @@ export default {
       let config = {
         inline: true,
         maxDate: (new Date()).setHours(23, 59, 59, 999),
-        locale: this.dateRangeConfig.locale
+        locale: this.dateRangeConfig.locale,
+        plugins: [ new ScrollPlugin() ]
       }
       if (this.dateRangeMode === DATE_RANGE_MODE_DAY) {
         config.mode = 'single'
       } else if (this.dateRangeMode === DATE_RANGE_MODE_WEEK) {
-        config.plugins = [new WeekSelect({})]
+        config.plugins.push(new WeekSelect({}))
       } else if (this.dateRangeMode === DATE_RANGE_MODE_MONTH) {
-        config.plugins = [new MonthSelect({})]
+        config.plugins.push(new MonthSelect({}))
       } else if (this.dateRangeMode === DATE_RANGE_MODE_CURRENT) {
         config.mode = 'range'
       }
