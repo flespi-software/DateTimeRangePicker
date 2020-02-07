@@ -88,7 +88,6 @@ export default {
       dateRangeConfig: {
         mode: 'single',
         inline: true,
-        maxDate: (new Date()).setHours(23, 59, 59, 999),
         locale: {
           firstDayOfWeek: 1
         }
@@ -122,7 +121,6 @@ export default {
       this.dateRangeMode = mode
       let config = {
         inline: true,
-        maxDate: (new Date()).setHours(23, 59, 59, 999),
         locale: this.dateRangeConfig.locale,
         plugins: [ new ScrollPlugin() ]
       }
@@ -159,7 +157,6 @@ export default {
       } else if (mode === DATE_RANGE_MODE_WEEK) {
         let getCurr = () => new Date(range[0].valueOf())
         let curr = getCurr()
-        let newDate = new Date()
         let currentDay = curr.getDay()
         if (this.dateRangeConfig.locale && this.dateRangeConfig.locale.firstDayOfWeek) {
           let firstDayOfWeek = this.dateRangeConfig.locale.firstDayOfWeek
@@ -171,21 +168,14 @@ export default {
         firstday.setHours(0, 0, 0, 0)
         let lastday = new Date(getCurr().setDate(last))
         lastday.setHours(23, 59, 59, 999)
-        if (lastday > newDate) {
-          lastday = newDate
-        }
         range = [firstday, lastday]
       } else if (mode === DATE_RANGE_MODE_MONTH) {
-        let newDate = new Date()
         let date = new Date(range[0].valueOf() + 86400000), y = date.getUTCFullYear(), m = date.getUTCMonth()
         let firstday = new Date(y, m, 1)
         firstday.setHours(0, 0, 0, 0)
         let lastday = new Date(y, m + 1, 1)
         lastday.setHours(0, 0, 0, 0)
         lastday = new Date(lastday - 1)
-        if (lastday > newDate) {
-          lastday = newDate
-        }
         range = [firstday, lastday]
       } else if (mode === DATE_RANGE_MODE_CURRENT) {
         let begin = this.currentBeginTime
@@ -196,10 +186,6 @@ export default {
         first.setHours(begin.getHours(), begin.getMinutes(), begin.getSeconds(), 0)
         last.setHours(end.getHours(), end.getMinutes(), end.getSeconds())
         range = [first, last]
-      }
-      let now = new Date()
-      if (range[1] > now) {
-        range[1] = now
       }
       return range
     },
