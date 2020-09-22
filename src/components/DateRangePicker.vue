@@ -13,7 +13,6 @@
         <q-input v-model.number="timestampFrom" type="number" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="2" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
         <q-input v-model.number="timestampTo" type="number" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="3" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
       </template>
-      <q-btn :color="currentTheme.color" flat class="q-mb-sm full-width" icon="check" label="Apply" @click="update" :disable="currentDateRangeModel[1] <= currentDateRangeModel[0] || (manualFormat === MANUAL_TIMESTAMP && (timestampFrom > 9999999999 || timestampTo > 9999999999))" />
     </div>
     <template v-else>
       <div class="time-range-input__wrapper q-mb-sm">
@@ -148,6 +147,7 @@ export default {
       },
       set (from) {
         this.$set(this.currentDateRangeModel, 0, this.manualToDate(from))
+        this.update()
       }
     },
     manualTo: {
@@ -156,6 +156,7 @@ export default {
       },
       set (to) {
         this.$set(this.currentDateRangeModel, 1, this.manualToDate(to))
+        this.update()
       }
     },
     timestampFrom: {
@@ -164,6 +165,7 @@ export default {
       },
       set (from) {
         this.$set(this.currentDateRangeModel, 0, new Date(from * 1000))
+        this.update()
       }
     },
     timestampTo: {
@@ -172,7 +174,11 @@ export default {
       },
       set (to) {
         this.$set(this.currentDateRangeModel, 1, new Date(to * 1000))
+        this.update()
       }
+    },
+    hasError () {
+      return this.currentDateRangeModel[1] <= this.currentDateRangeModel[0] || (this.manualFormat === MANUAL_TIMESTAMP && (this.timestampFrom > 9999999999 || this.timestampTo > 9999999999))
     }
   },
   methods: {
@@ -202,6 +208,10 @@ export default {
       this.update()
     },
     update () {
+      if (this.hasError) {
+        return this.$emit('error', true)
+      }
+      this.$emit('error', false)
       let value = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
       if (!value) { return }
       value = value.map(date => date.valueOf())

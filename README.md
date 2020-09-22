@@ -79,6 +79,7 @@ The component accepts these props:
 | Event        | Payload                                            | Description      |
 | :---             | :---:                                           | :---             |
 | input  | `Array` | Selected dates timestamps array |
+| error  | `Boolean` | Error in time range. |
 | change:mode  | `Number` | New component mode |
 
 ## Flatpickr wrapper
