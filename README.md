@@ -70,7 +70,7 @@ The component accepts these props:
 | Attribute        | Type                                            | Default              | Description           |
 | :---             | :---:                                           | :---:                | :---                  |
 | v-model / value  | Array                                           | `[new Date()]`               | RangeValue (required) |
-| mode             | Number{0,1,2,3}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker|
+| mode             | Number{0,1,2,3,4}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker, `4` - manual formated or timestamp mode|
 | theme           | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons |
 
 ### Available events

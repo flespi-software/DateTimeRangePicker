@@ -1,37 +1,51 @@
 <template>
   <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`]" style="max-width: 310px;">
-    <div class="fit text-center q-mb-sm" v-if="currentTheme.modeSwitch">
-      <q-btn-toggle :value="dateRangeMode" @input="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat rounded/>
+    <div class="fit text-center q-my-sm" v-if="currentTheme.modeSwitch">
+      <q-btn-toggle :value="dateRangeMode" @input="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat dense/>
     </div>
-    <div class="time-range-input__wrapper q-mb-sm">
-      <flat-pickr
-        :value="currentDateRangeModel"
-        @input="currentDateRangeModelChangeHandler"
-        :config="dateRangeConfig"
-        :theme="currentTheme"
-      />
+    <div v-if="dateRangeMode === DATE_RANGE_MODE_MANUAL" class="full-width q-px-md">
+      <q-btn-toggle v-model="manualFormat" class="q-mb-sm" :options="manualOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat spread></q-btn-toggle>
+      <template v-if="manualFormat === MANUAL_FORMAT">
+        <q-input v-model="manualFrom" debounce="300" class="q-field--with-bottom" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense mask="##/##/#### ##:##:##" fill-mask="0" :key="0"/>
+        <q-input v-model="manualTo" debounce="300" class="q-field--with-bottom" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense mask="##/##/#### ##:##:##" fill-mask="0" :key="1"/>
+      </template>
+      <template v-else-if="manualFormat === MANUAL_TIMESTAMP">
+        <q-input v-model.number="timestampFrom" type="number" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="2" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
+        <q-input v-model.number="timestampTo" type="number" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="3" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
+      </template>
+      <q-btn :color="currentTheme.color" flat class="q-mb-sm full-width" icon="check" label="Apply" @click="update" :disable="currentDateRangeModel[1] <= currentDateRangeModel[0] || (manualFormat === MANUAL_TIMESTAMP && (timestampFrom > 9999999999 || timestampTo > 9999999999))" />
     </div>
-    <div v-if="dateRangeMode === DATE_RANGE_MODE_CURRENT" class="time-range-input__wrapper q-mb-sm row">
-      <div class="time-range-input__time wrapper__begin col-5">
-        <div class="time__label" :class="[`text-${currentTheme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
+    <template v-else>
+      <div class="time-range-input__wrapper q-mb-sm">
         <flat-pickr
-          :value="currentBeginTime"
-          @input="beginTimeChangeHandler"
-          :config="timeConfig"
+          :value="currentDateRangeModel"
+          @input="currentDateRangeModelChangeHandler"
+          :config="dateRangeConfig"
           :theme="currentTheme"
         />
       </div>
-      <div class="col-2 text-center" :class="[`text-${currentTheme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
-      <div class="time-range-input__time wrapper__end col-5">
-        <div class="time__label" :class="[`text-${currentTheme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
-        <flat-pickr
-          :value="currentEndTime"
-          @input="endTimeChangeHandler"
-          :config="timeConfig"
-          :theme="currentTheme"
-        />
+      <div v-if="dateRangeMode === DATE_RANGE_MODE_CURRENT" class="time-range-input__wrapper q-mb-sm row">
+        <div class="time-range-input__time wrapper__begin col-5">
+          <div class="time__label" :class="[`text-${currentTheme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
+          <flat-pickr
+            :value="currentBeginTime"
+            @input="beginTimeChangeHandler"
+            :config="timeConfig"
+            :theme="currentTheme"
+          />
+        </div>
+        <div class="col-2 text-center" :class="[`text-${currentTheme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
+        <div class="time-range-input__time wrapper__end col-5">
+          <div class="time__label" :class="[`text-${currentTheme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
+          <flat-pickr
+            :value="currentEndTime"
+            @input="endTimeChangeHandler"
+            :config="timeConfig"
+            :theme="currentTheme"
+          />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -46,7 +60,10 @@ import 'flatpickr/dist/plugins/monthSelect/style.css'
 const DATE_RANGE_MODE_DAY = 0,
   DATE_RANGE_MODE_WEEK = 1,
   DATE_RANGE_MODE_MONTH = 2,
-  DATE_RANGE_MODE_CURRENT = 3
+  DATE_RANGE_MODE_CURRENT = 3,
+  DATE_RANGE_MODE_MANUAL = 4,
+  MANUAL_FORMAT = 0,
+  MANUAL_TIMESTAMP = 1
 
 export default {
   name: 'DateRangePicker',
@@ -60,7 +77,7 @@ export default {
       type: Number,
       default () { return DATE_RANGE_MODE_DAY },
       validator (mode) {
-        return [0, 1, 2, 3].includes(mode)
+        return [0, 1, 2, 3, 4].includes(mode)
       }
     },
     theme: {
@@ -107,12 +124,55 @@ export default {
         { label: 'Day', value: DATE_RANGE_MODE_DAY },
         { label: 'Week', value: DATE_RANGE_MODE_WEEK },
         { label: 'Month', value: DATE_RANGE_MODE_MONTH },
-        { label: 'Range', value: DATE_RANGE_MODE_CURRENT }
+        { label: 'Range', value: DATE_RANGE_MODE_CURRENT },
+        { label: 'Manual', value: DATE_RANGE_MODE_MANUAL }
       ],
       DATE_RANGE_MODE_DAY,
       DATE_RANGE_MODE_WEEK,
       DATE_RANGE_MODE_MONTH,
-      DATE_RANGE_MODE_CURRENT
+      DATE_RANGE_MODE_CURRENT,
+      DATE_RANGE_MODE_MANUAL,
+      MANUAL_FORMAT,
+      MANUAL_TIMESTAMP,
+      manualOptions: [
+        { label: 'Format', value: MANUAL_FORMAT },
+        { label: 'Timestamp', value: MANUAL_TIMESTAMP }
+      ],
+      manualFormat: MANUAL_FORMAT
+    }
+  },
+  computed: {
+    manualFrom: {
+      get () {
+        return this.dateToManual(this.currentDateRangeModel[0])
+      },
+      set (from) {
+        this.$set(this.currentDateRangeModel, 0, this.manualToDate(from))
+      }
+    },
+    manualTo: {
+      get () {
+        return this.dateToManual(this.currentDateRangeModel[1])
+      },
+      set (to) {
+        this.$set(this.currentDateRangeModel, 1, this.manualToDate(to))
+      }
+    },
+    timestampFrom: {
+      get () {
+        return Math.floor(this.currentDateRangeModel[0].valueOf() / 1000)
+      },
+      set (from) {
+        this.$set(this.currentDateRangeModel, 0, new Date(from * 1000))
+      }
+    },
+    timestampTo: {
+      get () {
+        return Math.floor(this.currentDateRangeModel[1].valueOf() / 1000)
+      },
+      set (to) {
+        this.$set(this.currentDateRangeModel, 1, new Date(to * 1000))
+      }
     }
   },
   methods: {
@@ -204,6 +264,22 @@ export default {
     endTimeChangeHandler (val) {
       this.currentEndTime = val
       this.update()
+    },
+    manualToDate (timestring) {
+      const [date, time] = timestring.split(' ')
+      const [day, month, year] = date.split('/')
+      const [hours, minutes, seconds] = time.split(':')
+      const result = new Date()
+      result.setDate(day)
+      result.setMonth(month - 1)
+      result.setYear(year)
+      result.setHours(hours)
+      result.setMinutes(minutes)
+      result.setSeconds(seconds)
+      return result
+    },
+    dateToManual (d) {
+      return date.formatDate(d, 'DD/MM/YYYY HH:mm:ss')
     }
   },
   watch: {
