@@ -280,12 +280,12 @@ export default {
       const [day, month, year] = date.split('/')
       const [hours, minutes, seconds] = time.split(':')
       const result = new Date()
-      result.setDate(day)
       result.setMonth(month - 1)
       result.setYear(year)
       result.setHours(hours)
       result.setMinutes(minutes)
       result.setSeconds(seconds)
+      result.setDate(day)
       return result
     },
     dateToManual (d) {
