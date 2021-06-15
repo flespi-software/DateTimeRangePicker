@@ -332,7 +332,6 @@ export default {
     border-top 20px solid #e8e8e8
     clear both
   .time-range-input__wrapper
-    width 307px
     .time-range-input__time
       .flatpickr-calendar
         width 100%

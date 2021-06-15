@@ -160,6 +160,8 @@ export default {
     $today_fg_color = #565656
     $selectedDayBackground = #666
     @require "../css/themes/datetimerange/flatpickr.styl"
+    .flatpickr-calendar.arrowTop:before,.flatpickr-calendar.arrowTop:after
+      display none
     .flatpickr-monthSelect-month
       color $monthForeground
       &.selected
