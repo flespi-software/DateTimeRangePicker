@@ -91,15 +91,16 @@ export default {
     }
   },
   data () {
-    let currentDateRangeModel = this.value.map(timestamp => new Date(timestamp))
-    let defaultTheme = {
+    const currentDateRangeModel = this.value.map(timestamp => new Date(timestamp))
+    const defaultTheme = {
       color: 'grey-9',
       bgColor: 'white',
       modeSwitch: true
     }
+    const currentTheme = Object.assign({}, defaultTheme, this.theme)
     return {
       defaultTheme,
-      currentTheme: Object.assign({}, defaultTheme, this.theme),
+      currentTheme,
       currentDateRangeModel,
       dateRangeConfig: {
         mode: 'single',
@@ -118,7 +119,7 @@ export default {
       },
       currentBeginTime: currentDateRangeModel[0],
       currentEndTime: currentDateRangeModel[1],
-      dateRangeMode: this.mode,
+      dateRangeMode: currentTheme.modeSwitch ? this.getModeByRange(this.value) : this.mode,
       dateRangeModeOptions: [
         { label: 'Day', value: DATE_RANGE_MODE_DAY },
         { label: 'Week', value: DATE_RANGE_MODE_WEEK },
@@ -217,6 +218,35 @@ export default {
       value = value.map(date => date.valueOf())
       if (value) { this.$emit('input', value) }
     },
+    getModeByRange (range) {
+      const dates = range.map(date => new Date(date.valueOf()))
+      const isDayRange = range[0].valueOf() === dates[0].setHours(0, 0, 0, 0).valueOf()
+        && range[1].valueOf() === dates[1].setHours(23, 59, 59, 999).valueOf()
+      console.log(range[0].valueOf(), dates[0].setHours(0, 0, 0, 0).valueOf())
+      if (isDayRange) {
+        if (range[1] - range[0] === 86399999) {
+          return DATE_RANGE_MODE_DAY
+        } else if (range[1] - range[0] === 604799999) {
+          return DATE_RANGE_MODE_WEEK
+        } else {
+          let date = new Date(range[0].valueOf() + 86400000),
+            y = date.getUTCFullYear(),
+            m = date.getUTCMonth()
+          let firstday = new Date(y, m, 1)
+          firstday.setHours(0, 0, 0, 0)
+          let lastday = new Date(y, m + 1, 1)
+          lastday.setHours(0, 0, 0, 0)
+          lastday = new Date(lastday - 1)
+          if (range[0].valueOf() === firstday.valueOf() && range[1].valueOf() === lastday.valueOf()) {
+            return DATE_RANGE_MODE_MONTH
+          } else {
+            return DATE_RANGE_MODE_CURRENT
+          }
+        }
+      } else {
+        return DATE_RANGE_MODE_CURRENT
+      }
+    },
     getValue (range, mode) {
       range = range.map(date => new Date(date.valueOf()))
       if (mode === DATE_RANGE_MODE_DAY) {
@@ -240,7 +270,9 @@ export default {
         lastday.setHours(23, 59, 59, 999)
         range = [firstday, lastday]
       } else if (mode === DATE_RANGE_MODE_MONTH) {
-        let date = new Date(range[0].valueOf() + 86400000), y = date.getUTCFullYear(), m = date.getUTCMonth()
+        let date = new Date(range[0].valueOf() + 86400000),
+          y = date.getUTCFullYear(),
+          m = date.getUTCMonth()
         let firstday = new Date(y, m, 1)
         firstday.setHours(0, 0, 0, 0)
         let lastday = new Date(y, m + 1, 1)
@@ -308,8 +340,7 @@ export default {
       handler  (mode, oldMode) {
         if (mode === oldMode) { return }
         this.dateRangeModeChange(mode)
-      },
-      immediate: true
+      }
     },
     theme (theme) {
       this.currentTheme = Object.assign({}, this.defaultTheme, theme)
