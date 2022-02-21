@@ -71,7 +71,7 @@ The component accepts these props:
 | :---             | :---:                                           | :---:                | :---                  |
 | v-model / value  | Array                                           | `[new Date()]`               | RangeValue (required) |
 | mode             | Number{0,1,2,3,4}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker, `4` - manual formated or timestamp mode|
-| theme           | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons |
+| theme           | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons(it works mode autodetect if enabled, else you can use $refs.range.getModeByRange(range)) |
 
 ### Available events
 The component accepts these props:
