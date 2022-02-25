@@ -10,8 +10,8 @@
         <q-input v-model="manualTo" debounce="300" class="q-field--with-bottom" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense mask="##/##/#### ##:##:##" fill-mask="0" :key="1"/>
       </template>
       <template v-else-if="manualFormat === MANUAL_TIMESTAMP">
-        <q-input v-model.number="timestampFrom" type="number" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="2" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
-        <q-input v-model.number="timestampTo" type="number" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="3" :rules="[val => val <= 9999999999 || 'Wrong timestamp']"/>
+        <q-input v-model.number="timestampFrom" type="number" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="2" :rules="[val => validateTimestamps(val)]"/>
+        <q-input v-model.number="timestampTo" type="number" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="3" :rules="[val => validateTimestamps(val)]"/>
       </template>
     </div>
     <template v-else>
@@ -147,7 +147,9 @@ export default {
         return this.dateToManual(this.currentDateRangeModel[0])
       },
       set (from) {
-        this.$set(this.currentDateRangeModel, 0, this.manualToDate(from))
+        from = this.manualToDate(from)
+        from.setMilliseconds(0)
+        this.$set(this.currentDateRangeModel, 0, from)
         this.update()
       }
     },
@@ -156,7 +158,9 @@ export default {
         return this.dateToManual(this.currentDateRangeModel[1])
       },
       set (to) {
-        this.$set(this.currentDateRangeModel, 1, this.manualToDate(to))
+        to = this.manualToDate(to)
+        to.setMilliseconds(999)
+        this.$set(this.currentDateRangeModel, 1, to)
         this.update()
       }
     },
@@ -165,7 +169,9 @@ export default {
         return Math.floor(this.currentDateRangeModel[0].valueOf() / 1000)
       },
       set (from) {
-        this.$set(this.currentDateRangeModel, 0, new Date(from * 1000))
+        from = Math.floor(from)
+        from = from * 1000
+        this.$set(this.currentDateRangeModel, 0, new Date(from))
         this.update()
       }
     },
@@ -174,7 +180,9 @@ export default {
         return Math.floor(this.currentDateRangeModel[1].valueOf() / 1000)
       },
       set (to) {
-        this.$set(this.currentDateRangeModel, 1, new Date(to * 1000))
+        to = Math.floor(to)
+        to = ((to + 1) * 1000) - 1
+        this.$set(this.currentDateRangeModel, 1, new Date(to))
         this.update()
       }
     },
@@ -321,6 +329,10 @@ export default {
     },
     dateToManual (d) {
       return date.formatDate(d, 'DD/MM/YYYY HH:mm:ss')
+    },
+    validateTimestamps (val) {
+      return (val <= 9999999999 && val === Math.abs(val))
+        || 'Wrong timestamp'
     }
   },
   watch: {
