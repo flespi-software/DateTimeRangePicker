@@ -98,17 +98,13 @@ export default {
       modeSwitch: true
     }
     const currentTheme = Object.assign({}, defaultTheme, this.theme)
+    const dateRangeMode = currentTheme.modeSwitch ? this.getModeByRange(this.value) : this.mode
+    const dateRangeConfig = this.getConfigByMode(dateRangeMode)
     return {
       defaultTheme,
       currentTheme,
       currentDateRangeModel,
-      dateRangeConfig: {
-        mode: 'single',
-        inline: true,
-        locale: {
-          firstDayOfWeek: 1
-        }
-      },
+      dateRangeConfig,
       timeConfig: {
         enableTime: true,
         noCalendar: true,
@@ -119,7 +115,7 @@ export default {
       },
       currentBeginTime: currentDateRangeModel[0],
       currentEndTime: currentDateRangeModel[1],
-      dateRangeMode: currentTheme.modeSwitch ? this.getModeByRange(this.value) : this.mode,
+      dateRangeMode,
       dateRangeModeOptions: [
         { label: 'Day', value: DATE_RANGE_MODE_DAY },
         { label: 'Week', value: DATE_RANGE_MODE_WEEK },
@@ -194,21 +190,7 @@ export default {
     formatDate: date.formatDate,
     dateRangeModeChange (mode) {
       this.dateRangeMode = mode
-      let config = {
-        inline: true,
-        locale: this.dateRangeConfig.locale,
-        plugins: [ new ScrollPlugin() ]
-      }
-      if (this.dateRangeMode === DATE_RANGE_MODE_DAY) {
-        config.mode = 'single'
-      } else if (this.dateRangeMode === DATE_RANGE_MODE_WEEK) {
-        config.plugins.push(new WeekSelect({}))
-      } else if (this.dateRangeMode === DATE_RANGE_MODE_MONTH) {
-        config.plugins.push(new MonthSelect({}))
-      } else if (this.dateRangeMode === DATE_RANGE_MODE_CURRENT) {
-        config.mode = 'range'
-      }
-      this.dateRangeConfig = config
+      this.dateRangeConfig = this.getConfigByMode(mode)
       let currentDateRangeModel = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
       this.currentBeginTime = currentDateRangeModel[0]
       this.currentEndTime = currentDateRangeModel[1]
@@ -216,15 +198,36 @@ export default {
       this.$emit('change:mode', mode)
       this.update()
     },
-    update () {
-      if (this.hasError) {
-        return this.$emit('error', true)
+    getConfigByMode (mode) {
+      let config = {
+        inline: true,
+        locale: {
+          firstDayOfWeek: 1
+        },
+        plugins: [ new ScrollPlugin() ]
       }
-      this.$emit('error', false)
+      if (mode === DATE_RANGE_MODE_DAY) {
+        config.mode = 'single'
+      } else if (mode === DATE_RANGE_MODE_WEEK) {
+        config.plugins.push(new WeekSelect({}))
+      } else if (mode === DATE_RANGE_MODE_MONTH) {
+        config.plugins.push(new MonthSelect({}))
+      } else if (mode === DATE_RANGE_MODE_CURRENT) {
+        config.mode = 'range'
+      }
+      return config
+    },
+    update () {
+      // if (this.hasError) {
+      //   return this.$emit('error', true)
+      // }
+      // console.log(321)
+      // this.$emit('error', false)
       let value = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
       if (!value) { return }
       value = value.map(date => date.valueOf())
       if (value) { this.$emit('input', value) }
+      this.$emit('error', this.hasError)
     },
     getModeByRange (range) {
       const dates = range.map(date => new Date(date.valueOf()))
