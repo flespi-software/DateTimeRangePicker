@@ -183,11 +183,18 @@ export default {
       }
     },
     hasError () {
-      return this.currentDateRangeModel[1] <= this.currentDateRangeModel[0] || (this.manualFormat === MANUAL_TIMESTAMP && (this.timestampFrom > 9999999999 || this.timestampTo > 9999999999))
+      return this.checkErrors()
     }
   },
   methods: {
     formatDate: date.formatDate,
+    checkErrors () {
+      const result = this.currentDateRangeModel[1] <= this.currentDateRangeModel[0] ||
+        (this.manualFormat === MANUAL_TIMESTAMP &&
+        (this.timestampFrom > 9999999999 || this.timestampTo > 9999999999))
+      this.$emit('error', result)
+      return result
+    },
     dateRangeModeChange (mode) {
       this.dateRangeMode = mode
       this.dateRangeConfig = this.getConfigByMode(mode)
@@ -218,16 +225,11 @@ export default {
       return config
     },
     update () {
-      // if (this.hasError) {
-      //   return this.$emit('error', true)
-      // }
-      // console.log(321)
-      // this.$emit('error', false)
       let value = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
       if (!value) { return }
       value = value.map(date => date.valueOf())
       if (value) { this.$emit('input', value) }
-      this.$emit('error', this.hasError)
+      this.$nextTick(this.checkErrors)
     },
     getModeByRange (range) {
       const dates = range.map(date => new Date(date.valueOf()))
