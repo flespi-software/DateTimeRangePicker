@@ -5,7 +5,9 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import Flatpickr from 'flatpickr'
+
 import 'flatpickr/dist/flatpickr.css'
 const includedEvents = [
   'onChange',
@@ -18,10 +20,10 @@ const includedEvents = [
 const camelToKebab = (string) => { return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() }
 const arrayify = (obj) => { return Array.isArray(obj) ? obj : [obj] }
 
-export default {
-  name: 'flatpickr',
+export default defineComponent({
+  name: 'FlatPickr',
   props: {
-    value: {
+    modelValue: {
       default: null,
       required: true,
       validator (value) {
@@ -77,7 +79,7 @@ export default {
           this.$emit(camelToKebab(hook), ...args)
         })
       })
-      safeConfig.defaultDate = this.value || safeConfig.defaultDate
+      safeConfig.defaultDate = this.modelValue || safeConfig.defaultDate
       this.fp = new Flatpickr(this.getElem(), safeConfig)
       this.fpInput().addEventListener('blur', this.onBlur)
       this.fp.hourElement && this.fp._bind(this.fp.hourElement, 'blur', this.onBlur, { capture: true })
@@ -95,12 +97,18 @@ export default {
       return this.config.wrap ? this.$el.parentNode : this.$refs.input
     },
     getValue () {
-      return Array.isArray(this.value) ? [...this.fp.selectedDates] : this.fp.selectedDates[0]
+      return Array.isArray(this.modelValue) ? [...this.fp.selectedDates] : this.fp.selectedDates[0]
     },
     onInput (event) {
       let newValue = this.getValue()
-      if (!this.hasChanges(newValue, this.value)) { return false }
-      this.$emit('input', newValue)
+      if (!this.hasChanges(newValue, this.modelValue)) { return false }
+      if (Array.isArray(this.modelValue)) {
+        // this is timerange mode - emit new range value event for the parent
+        this.$emit('update:range', newValue)
+      } else {
+        // this is timepicker mode - update modelValue
+        this.$emit('update:modelValue', newValue)
+      }
     },
     fpInput () {
       return this.fp.altInput || this.fp.input
@@ -128,7 +136,7 @@ export default {
         }
       }
     },
-    value (newValue, oldValue) {
+    modelValue (newValue, oldValue) {
       if (!this.hasChanges(newValue, oldValue)) { return false }
       this.fp && this.fp.setDate(newValue, true)
     },
@@ -141,30 +149,31 @@ export default {
       }
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.destroy()
   }
-}
+})
 </script>
-<style lang="stylus">
-  .flatpickr__theme-dark
-    $calendarBackground = #565656
-    $calendarBorderColor = darken(#565656, 50%)
-    $monthForeground = #fff
-    $monthBackground = #565656
-    $weekdaysBackground = transparent
-    $weekdaysForeground = #fff
-    $dayForeground = alpha(white, 0.95)
-    $dayHoverBackground = lighten($calendarBackground, 25%)
-    $todayColor = #eee
-    $today_fg_color = #565656
-    $selectedDayBackground = #666
-    @require "../css/themes/datetimerange/flatpickr.styl"
-    .flatpickr-calendar.arrowTop:before,.flatpickr-calendar.arrowTop:after
-      display none
-    .flatpickr-monthSelect-month
-      color $monthForeground
-      &.selected
-        background-color $selectedDayBackground
-        color $monthForeground
+<style lang="sass">
+@use "sass:color"
+.flatpickr__theme-dark
+  $calendarBackground: #565656
+  $calendarBorderColor: color.adjust($calendarBackground, $blackness: 100%)
+  $monthForeground: #fff
+  $monthBackground: #565656
+  $weekdaysBackground: transparent
+  $weekdaysForeground: #fff
+  $dayForeground: rgba(white, 0.95)
+  $dayHoverBackground: color.adjust($calendarBackground, $lightness: 20%)
+  $todayColor: #eee
+  $today_fg_color: #565656
+  $selectedDayBackground: #666
+  @import "../css/themes/datetimerange/flatpickr"
+  .flatpickr-calendar.arrowTop:before,.flatpickr-calendar.arrowTop:after
+    display: none
+  .flatpickr-monthSelect-month
+    color: $monthForeground
+    &.selected
+      background-color: $selectedDayBackground
+      color: $monthForeground
 </style>

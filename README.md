@@ -9,14 +9,14 @@ npm install git+https://github.com/flespi-software/DateTimeRangePicker.git --sav
 
 ## Prerequisites:
 
-- [Node.js](https://nodejs.org/en/) (>=9.x)
+- [Node.js](https://nodejs.org/en/) (>=16.x)
 - npm version 5+ and [Git](https://git-scm.com/)
-- [Quasar](https://v0-17.quasar-framework.org/) (^0.17.0)
-- [Vue](https://vuejs.org/) (^2.5.0)
+- [Quasar](https://quasar.dev/) (^2.17.1)
+- [Vue](https://vuejs.org/) (^3.4.18)
 
 ## Run examples on your localhost
 * Clone this repo
-* You should have quasar (^0.17.0) pre-installed
+* You should have quasar (^2.17.1) pre-installed
 * Install dependencies `npm install`
 * Run webpack dev server `quasar dev`
 * This should open the demo page at `http://localhost:8080` in your default web browser
@@ -33,14 +33,6 @@ npm install git+https://github.com/flespi-software/DateTimeRangePicker.git --sav
 * NPM ecosystems
 
 ### Usage
-In quasar.config.js
-```js
-  framework: {
-    components: [
-      'QBtnToggle'
-    ]
-  }
-```
 
 ```html
 <template>
@@ -51,8 +43,9 @@ In quasar.config.js
 
 <script>
   import DateRange from 'datetimerangepicker'
+  import { defineComponent } from 'vue'
 
-  export default {
+  export default defineComponent({
     data () {
       return {
         date: [new Date()],
@@ -61,26 +54,26 @@ In quasar.config.js
     components: {
       DateRange
     }
-  }
+  })
 </script>
 ```
 ### Available props
 The component accepts these props:
 
-| Attribute        | Type                                            | Default              | Description           |
-| :---             | :---:                                           | :---:                | :---                  |
-| v-model / value  | Array                                           | `[new Date()]`               | RangeValue (required) |
-| mode             | Number{0,1,2,3,4}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker, `4` - manual formated or timestamp mode|
-| theme           | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons(it works mode autodetect if enabled, else you can use $refs.range.getModeByRange(range)) |
+| Attribute             | Type                                            | Default              | Description           |
+| :---                  | :---:                                           | :---:                | :---                  |
+| v-model / modelValue  | Array                                           | `[new Date()]`               | RangeValue (required) |
+| mode                  | Number{0,1,2,3,4}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker, `4` - manual formated or timestamp mode|
+| theme                 | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons(it works mode autodetect if enabled, else you can use $refs.range.getModeByRange(range)) |
 
 ### Available events
 The component accepts these props:
 
-| Event        | Payload                                            | Description      |
-| :---             | :---:                                           | :---             |
-| input  | `Array` | Selected dates timestamps array |
-| error  | `Boolean` | Error in time range. |
-| change:mode  | `Number` | New component mode |
+| Event              | Payload                                            | Description      |
+| :---               | :---:                                           | :---             |
+| update:modelValue  | `Array` | Selected dates timestamps array |
+| error              | `Boolean` | Error in time range. |
+| change:mode        | `Number` | New component mode |
 
 ## Flatpickr wrapper
 ![Screenshot](/misc/wrapper.png?raw=true "Flatpickr wrapper")
@@ -94,8 +87,9 @@ The component accepts these props:
 
 <script>
   import { VueFlatPickr } from 'datetimerangepicker'
+  import { defineComponent } from 'vue'
 
-  export default {
+  export default defineComponent({
     data () {
       return {
         date: new Date(),
@@ -111,7 +105,7 @@ The component accepts these props:
     components: {
       VueFlatPickr
     }
-  }
+  })
 </script>
 ```
 ### Events
@@ -125,11 +119,11 @@ The component accepts these props:
 ### Available props
 The component accepts these props:
 
-| Attribute        | Type                                            | Default              | Description      |
-| :---             | :---:                                           | :---:                | :---             |
-| v-model / value  | String / Date Object / Array / Timestamp / null | `null`               | Date-picker value (required) |
-| config           | Object                                          | `{wrap:false}`       | Flatpickr configuration [options](https://chmln.github.io/flatpickr/options/)|
-| events           | Array                                           | Array of useful events  | Customise the [events](https://chmln.github.io/flatpickr/events/) to be emitted|
-| theme            | Object                                          | `{color:'grey-9', bgColor:'white'}` | `color` - text color, `bgColor` - background color |
+| Attribute             | Type                                            | Default              | Description      |
+| :---                  | :---:                                           | :---:                | :---             |
+| v-model / modelValue  | String / Date Object / Array / Timestamp / null | `null`               | Date-picker value (required) |
+| config                | Object                                          | `{wrap:false}`       | Flatpickr configuration [options](https://chmln.github.io/flatpickr/options/)|
+| events                | Array                                           | Array of useful events  | Customise the [events](https://chmln.github.io/flatpickr/events/) to be emitted|
+| theme                 | Object                                          | `{color:'grey-9', bgColor:'white'}` | `color` - text color, `bgColor` - background color |
 ## License
 [MIT](LICENSE) License

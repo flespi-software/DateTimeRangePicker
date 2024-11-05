@@ -1,7 +1,7 @@
 <template>
   <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`]" style="max-width: 310px;">
     <div class="fit text-center q-my-sm" v-if="currentTheme.modeSwitch">
-      <q-btn-toggle :value="dateRangeMode" @input="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat dense/>
+      <q-btn-toggle v-model="dateRangeMode" @update:model-value="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat dense/>
     </div>
     <div v-if="dateRangeMode === DATE_RANGE_MODE_MANUAL" class="full-width q-px-md">
       <q-btn-toggle v-model="manualFormat" class="q-mb-sm" :options="manualOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat spread></q-btn-toggle>
@@ -17,8 +17,8 @@
     <template v-else>
       <div class="time-range-input__wrapper q-mb-sm">
         <flat-pickr
-          :value="currentDateRangeModel"
-          @input="currentDateRangeModelChangeHandler"
+          v-model="currentDateRangeModel"
+          @update:range="currentDateRangeModelChangeHandler"
           :config="dateRangeConfig"
           :theme="currentTheme"
         />
@@ -27,8 +27,8 @@
         <div class="time-range-input__time wrapper__begin col-5">
           <div class="time__label" :class="[`text-${currentTheme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
           <flat-pickr
-            :value="currentBeginTime"
-            @input="beginTimeChangeHandler"
+            v-model="currentBeginTime"
+            @update:modelValue="beginTimeChangeHandler"
             :config="timeConfig"
             :theme="currentTheme"
           />
@@ -37,8 +37,8 @@
         <div class="time-range-input__time wrapper__end col-5">
           <div class="time__label" :class="[`text-${currentTheme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
           <flat-pickr
-            :value="currentEndTime"
-            @input="endTimeChangeHandler"
+            v-model ="currentEndTime"
+            @update:modelValue="endTimeChangeHandler"
             :config="timeConfig"
             :theme="currentTheme"
           />
@@ -49,9 +49,10 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import { date } from 'quasar'
 import flatPickr from './FlatPickr.vue'
-import WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect'
+import * as WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect'
 import MonthSelect from 'flatpickr/dist/plugins/monthSelect/index'
 import ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin'
 import 'flatpickr/dist/plugins/monthSelect/style.css'
@@ -64,10 +65,10 @@ const DATE_RANGE_MODE_DAY = 0,
   MANUAL_FORMAT = 0,
   MANUAL_TIMESTAMP = 1
 
-export default {
+export default defineComponent({
   name: 'DateRangePicker',
   props: {
-    value: {
+    modelValue: {
       type: Array,
       required: true,
       default () { return [Date.now()] }
@@ -91,14 +92,14 @@ export default {
     }
   },
   data () {
-    const currentDateRangeModel = this.value.map(timestamp => new Date(timestamp))
+    const currentDateRangeModel = this.modelValue.map(timestamp => new Date(timestamp))
     const defaultTheme = {
       color: 'grey-9',
       bgColor: 'white',
       modeSwitch: true
     }
     const currentTheme = Object.assign({}, defaultTheme, this.theme)
-    const dateRangeMode = currentTheme.modeSwitch ? this.getModeByRange(this.value) : this.mode
+    const dateRangeMode = currentTheme.modeSwitch ? this.getModeByRange(this.modelValue) : this.mode
     const dateRangeConfig = this.getConfigByMode(dateRangeMode)
     return {
       defaultTheme,
@@ -145,7 +146,7 @@ export default {
       set (from) {
         from = this.manualToDate(from)
         from.setMilliseconds(0)
-        this.$set(this.currentDateRangeModel, 0, from)
+        this.currentDateRangeModel[0] = from
         this.update()
       }
     },
@@ -156,7 +157,7 @@ export default {
       set (to) {
         to = this.manualToDate(to)
         to.setMilliseconds(999)
-        this.$set(this.currentDateRangeModel, 1, to)
+        this.currentDateRangeModel[1] = to
         this.update()
       }
     },
@@ -167,7 +168,7 @@ export default {
       set (from) {
         from = Math.floor(from)
         from = from * 1000
-        this.$set(this.currentDateRangeModel, 0, new Date(from))
+        this.currentDateRangeModel[0] = new Date(from)
         this.update()
       }
     },
@@ -178,7 +179,7 @@ export default {
       set (to) {
         to = Math.floor(to)
         to = ((to + 1) * 1000) - 1
-        this.$set(this.currentDateRangeModel, 1, new Date(to))
+        this.currentDateRangeModel[1] = new Date(to)
         this.update()
       }
     },
@@ -228,7 +229,7 @@ export default {
       let value = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
       if (!value) { return }
       value = value.map(date => date.valueOf())
-      if (value) { this.$emit('input', value) }
+      if (value) { this.$emit('update:modelValue', value) }
       this.$nextTick(this.checkErrors)
     },
     getModeByRange (range) {
@@ -341,7 +342,7 @@ export default {
     }
   },
   watch: {
-    value (newValue, oldValue) {
+    modelValue (newValue, oldValue) {
       if (
         Array.isArray(newValue) && Array.isArray(oldValue) &&
         newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
@@ -363,29 +364,29 @@ export default {
     }
   },
   components: { flatPickr }
-}
+})
 </script>
 
-<style lang="stylus">
-  .date-range-wrapper:after
-    content ''
-    position absolute
-    left 42%
-    top 100%
-    width 0
-    height 0
-    border-left 20px solid transparent
-    border-right 20px solid transparent
-    border-top 20px solid #e8e8e8
-    clear both
-  .time-range-input__wrapper
-    .time-range-input__time
-      .flatpickr-calendar
-        width 100%
-      .time__label
-        font-size .8rem
-        font-weight bold
-        padding-left 5px
-    input[data-input]
-      display none
+<style lang="sass">
+.date-range-wrapper:after
+  content: ''
+  position: absolute
+  left: 42%
+  top: 100%
+  width: 0
+  height: 0
+  border-left: 20px solid transparent
+  border-right: 20px solid transparent
+  border-top: 20px solid #e8e8e8
+  clear: both
+.time-range-input__wrapper
+  .time-range-input__time
+    .flatpickr-calendar
+      width: 100%
+    .time__label
+      font-size: .8rem
+      font-weight: bold
+      padding-left: 5px
+  input[data-input]
+    display: none
 </style>

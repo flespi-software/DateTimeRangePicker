@@ -13,9 +13,10 @@
 </template>
 
 <script>
-import DateRange from '../components/DateRangePicker'
-import VueFlatPickr from '../components/FlatPickr'
-export default {
+import { defineComponent } from 'vue'
+import DateRange from '../components/DateRangePicker.vue'
+import VueFlatPickr from '../components/FlatPickr.vue'
+export default defineComponent({
   name: 'PageIndex',
   data () {
     return {
@@ -28,5 +29,6 @@ export default {
     DateRange,
     VueFlatPickr
   }
-}
+})
 </script>
+
