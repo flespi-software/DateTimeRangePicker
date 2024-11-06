@@ -1,6 +1,6 @@
 {
   "name": "datetimerangepicker",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Date-time-range picker based on Quasar Framework",
   "productName": "DateTimeRangePicker",
   "author": "Sergey Buntsevich <scarry92@yandex.ru>",

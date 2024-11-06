@@ -53,8 +53,8 @@ import { defineComponent } from 'vue'
 import { date } from 'quasar'
 import flatPickr from './FlatPickr.vue'
 import * as WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect'
-import MonthSelect from 'flatpickr/dist/plugins/monthSelect/index'
-import ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin'
+import * as MonthSelect from 'flatpickr/dist/plugins/monthSelect/index'
+import * as ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin'
 import 'flatpickr/dist/plugins/monthSelect/style.css'
 
 const DATE_RANGE_MODE_DAY = 0,
