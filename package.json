@@ -1,6 +1,6 @@
 {
   "name": "datetimerangepicker",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Date-time-range picker based on Quasar Framework",
   "productName": "DateTimeRangePicker",
   "author": "Sergey Buntsevich <scarry92@yandex.ru>",
@@ -8,10 +8,7 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
-    "format": "prettier --write \"**/*.{js,vue,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build"
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.12",

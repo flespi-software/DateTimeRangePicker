@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [4.0.1] - 2024-11-06
+[fix] fixed flatpickr import
+
 ### [4.0.0] - 2024-11-05
 [update] project updated to vue 3 and quasar 2 versions of frameworks
 

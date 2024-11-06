@@ -6,7 +6,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import Flatpickr from 'flatpickr'
+import * as Flatpickr from 'flatpickr'
 
 import 'flatpickr/dist/flatpickr.css'
 const includedEvents = [
