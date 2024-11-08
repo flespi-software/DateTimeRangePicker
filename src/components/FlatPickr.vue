@@ -6,9 +6,9 @@
 
 <script>
 import { defineComponent } from 'vue'
-import * as Flatpickr from 'flatpickr'
+import * as Flatpickr from 'flatpickr/dist/flatpickr.js'
 
-import 'flatpickr/dist/flatpickr.css'
+// import 'flatpickr/dist/flatpickr.css'
 const includedEvents = [
   'onChange',
   'onClose',
