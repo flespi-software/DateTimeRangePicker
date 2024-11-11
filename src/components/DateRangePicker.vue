@@ -55,7 +55,7 @@ import flatPickr from './FlatPickr.vue'
 import * as WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect.js'
 import * as MonthSelect from 'flatpickr/dist/plugins/monthSelect/index.js'
 import * as ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin.js'
-// import 'flatpickr/dist/plugins/monthSelect/style.css'
+import 'flatpickr/dist/plugins/monthSelect/style.css'
 
 const DATE_RANGE_MODE_DAY = 0,
   DATE_RANGE_MODE_WEEK = 1,

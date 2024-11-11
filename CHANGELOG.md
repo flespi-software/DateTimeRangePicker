@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [4.0.4] - 2024-11-11
+[fix] fixed flatpickr styles imports
+
 ### [4.0.2] - 2024-11-06
 [fix] fixed flatpickr plugins import
 
