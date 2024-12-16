@@ -1,6 +1,6 @@
 {
   "name": "datetimerangepicker",
-  "version": "4.0.4",
+  "version": "5.0.0",
   "description": "Date-time-range picker based on Quasar Framework",
   "productName": "DateTimeRangePicker",
   "author": "Sergey Buntsevich <scarry92@yandex.ru>",
@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.12",
-    "flatpickr": "4.6.3",
     "quasar": "^2.17.1",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12"

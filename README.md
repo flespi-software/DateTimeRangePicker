@@ -21,9 +21,9 @@ npm install git+https://github.com/flespi-software/DateTimeRangePicker.git --sav
 * Run webpack dev server `quasar dev`
 * This should open the demo page at `http://localhost:8080` in your default web browser
 
-## DateTimeRangePicker component
+## DateRangePicker component
 
-![Screenshot](/misc/component.png?raw=true "DateTimeRangePicker")
+![Screenshot](/misc/DateRangePicker.png?raw=true "DateRangePicker")
 
 ### Features
 * ES6 Javascript
@@ -37,22 +37,23 @@ npm install git+https://github.com/flespi-software/DateTimeRangePicker.git --sav
 ```html
 <template>
   <div>
-    <date-range v-model="date"/>
+    <date-range-picker v-model="interval" :theme="{color: 'grey'}"/>
   </div>
 </template>
 
 <script>
-  import DateRange from 'datetimerangepicker'
+  import DateRangePicker from 'datetimerangepicker'
   import { defineComponent } from 'vue'
 
   export default defineComponent({
     data () {
+      const currentTimestamp = Math.floor(Date.now() / 1000)
       return {
-        date: [new Date()],
+        interval: [currentTimestamp - 86399, currentTimestamp]
       }
     },
     components: {
-      DateRange
+      DateRangePicker
     }
   })
 </script>
@@ -62,68 +63,106 @@ The component accepts these props:
 
 | Attribute             | Type                                            | Default              | Description           |
 | :---                  | :---:                                           | :---:                | :---                  |
-| v-model / modelValue  | Array                                           | `[new Date()]`               | RangeValue (required) |
-| mode                  | Number{0,1,2,3,4}                              | `0`                  | Component mode: `0` - Single date picker, `1` - week picker, `2` - month picker, `3` - custom range picker, `4` - manual formated or timestamp mode|
-| theme                 | Object                                           | `{color:'grey-9', bgColor:'white', modeSwitch:true}` | `color` - text color, `bgColor` - background color, `modeSwitch` - need show switch mode buttons(it works mode autodetect if enabled, else you can use $refs.range.getModeByRange(range)) |
+| v-model / modelValue  | Array                                           | `[Math.floor(Date.now() / 1000) - 86399, Math.floor(Date.now() / 1000)]` | Timestams range in seconds (required) |
+| mode                  | Number{0,1,2}                              | `1`                  | Component mode: `0` - Single date picker, `1` - custom range picker, `2` - manual formatted date or timestamp mode|
+| theme                 | Object                                           | `{color:'grey', firstDayOfWeek:1, modeSwitch:true, timeScrolls: true}` | `color` - overall component's color, from quasar color palette, `firstDayOfWeek` - first date of the week for qDate component, `modeSwitch` - show switch mode buttons, `timeScrolls` - enable/disable scrolling for hours, minutes and seconds inputs |
 
 ### Available events
-The component accepts these props:
+The component fires these events:
 
-| Event              | Payload                                            | Description      |
+| Event              | Payload Type                                    | Description      |
 | :---               | :---:                                           | :---             |
-| update:modelValue  | `Array` | Selected dates timestamps array |
-| error              | `Boolean` | Error in time range. |
-| change:mode        | `Number` | New component mode |
+| update:modelValue  | Array | Array of two timestamps (in seconds) [timestampFrom, timestampTo + 0.999]  |
+| change:mode        | Number | Component's mode is switched |
 
-## Flatpickr wrapper
-![Screenshot](/misc/wrapper.png?raw=true "Flatpickr wrapper")
+## DateTimePicker component
+
+![Screenshot](/misc/DateTimePicker.png?raw=true "DateTimePicker")
+
 ### Usage
 ```html
 <template>
   <div>
-    <vue-flat-pickr v-model="date" :config="config" />
+    <date-time-picker v-model="timestamp" :theme="{color: 'grey'}"/>
   </div>
 </template>
 
 <script>
-  import { VueFlatPickr } from 'datetimerangepicker'
+  import { DateTimePicker } from 'datetimerangepicker'
   import { defineComponent } from 'vue'
 
   export default defineComponent({
     data () {
       return {
-        date: new Date(),
-        config: {
-          wrap: true, // set wrap to true only when using 'input-group'
-          altFormat: 'M j, Y',
-          altInput: true,
-          dateFormat: 'Y-m-d',
-          locale: Hindi, // locale for this instance only
-        }
+        timestamp: Math.floor(Date.now() / 1000)
       }
     },
     components: {
-      VueFlatPickr
+      DateTimePicker
     }
   })
 </script>
 ```
-### Events
-* The component can emit all possible events, you can listen to them in your component
-```html
-<vue-flat-pickr v-model="date" @on-change="doSomethingOnChange" @on-close="doSomethingOnClose" />
-```
-* Events names has been converted to kebab-case.
-* You can still pass your methods in `:config` like original flatpickr do.
 
 ### Available props
 The component accepts these props:
 
 | Attribute             | Type                                            | Default              | Description      |
 | :---                  | :---:                                           | :---:                | :---             |
-| v-model / modelValue  | String / Date Object / Array / Timestamp / null | `null`               | Date-picker value (required) |
-| config                | Object                                          | `{wrap:false}`       | Flatpickr configuration [options](https://chmln.github.io/flatpickr/options/)|
-| events                | Array                                           | Array of useful events  | Customise the [events](https://chmln.github.io/flatpickr/events/) to be emitted|
-| theme                 | Object                                          | `{color:'grey-9', bgColor:'white'}` | `color` - text color, `bgColor` - background color |
+| v-model / modelValue  | Number | `Math.floor(Date.now() / 1000)`               | Timestamp in seconds (required) |
+| theme                 | Object                                           | `{color:'grey', firstDayOfWeek:1, modeSwitch:true, timeScrolls: true}` | `color` - overall component's color, from quasar color palette, `firstDayOfWeek` - first date of the week for qDate component, `modeSwitch` - show switch mode buttons, `timeScrolls` - enable/disable scrolling for hours, minutes and seconds inputs |
+
+### Available events
+The component fires these events:
+
+| Event              | Payload Type  | Description      |
+| :---               | :---:         | :---             |
+| update:modelValue  | Number        | Selected timestamp (in seconds)  |
+
+## DateRangeModal component
+
+![Screenshot](/misc/DateRangeModal.png?raw=true "DateRangeModal buttons")
+![Screenshot](/misc/DateRangeModalOpened.png?raw=true "DateRangeModal dialog opened")
+
+```html
+<template>
+  <div>
+    <date-range-modal v-model="interval" :theme="{color: 'grey'}"/>
+  </div>
+</template>
+
+<script>
+  import { DateRangeModal } from 'datetimerangepicker'
+  import { defineComponent } from 'vue'
+
+  export default defineComponent({
+    data () {
+      const currentTimestamp = Date.now()
+      return {
+        interval: [currentTimestamp - 86399999, currentTimestamp]
+      }
+    },
+    components: {
+      DateRangeModal
+    }
+  })
+</script>
+```
+
+### Available props
+The component accepts these props:
+
+| Attribute             | Type                                            | Default              | Description           |
+| :---                  | :---:                                           | :---:                | :---                  |
+| v-model / modelValue  | Array                                           | `[Date.now() - 86399000, Date.now()]` | Timestams range in millisecond (required) |
+| theme                 | Object                                           | `{color:'grey', firstDayOfWeek:1, modeSwitch:true, timeScrolls: true}` | `color` - overall component's color, from quasar color palette, `firstDayOfWeek` - first date of the week for qDate component, `modeSwitch` - show switch mode buttons, `timeScrolls` - enable/disable scrolling for hours, minutes and seconds inputs |
+
+### Available events
+The component fires these events:
+
+| Event              | Payload Type  | Description      |
+| :---               | :---:         | :---             |
+| update:modelValue  | Array        | Selected timestamps' range (in millisecond)  |
+
 ## License
 [MIT](LICENSE) License

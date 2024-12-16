@@ -1,133 +1,249 @@
 <template>
-  <div class="relative-position flex flex-center" :class="[`bg-${currentTheme.bgColor}`]" style="max-width: 310px;">
-    <div class="fit text-center q-my-sm" v-if="currentTheme.modeSwitch">
-      <q-btn-toggle v-model="dateRangeMode" @update:model-value="dateRangeModeChange" :options="dateRangeModeOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat dense/>
+  <div :class="`bg-${currentTheme.color}-6`" class="outer_contour">
+    <div class="text-center q-my-sm" v-if="currentTheme.modeSwitch">
+      <q-btn-toggle flat dense spread
+        v-model="dateRangeMode"
+        :options="dateRangeModeOptions"
+        :toggle-text-color="`${currentTheme.color}-3`"
+        :text-color="`${currentTheme.color}-10`"
+        @update:model-value="dateRangeModeChanged"
+      />
     </div>
-    <div v-if="dateRangeMode === DATE_RANGE_MODE_MANUAL" class="full-width q-px-md">
-      <q-btn-toggle v-model="manualFormat" class="q-mb-sm" :options="manualOptions" :color="currentTheme.bgColor" text-color="grey" :toggle-text-color="currentTheme.color" flat spread></q-btn-toggle>
+    <div v-if="dateRangeMode === DATE_RANGE_MODE_RANGE">
+      <q-date minimal range square flat bordered no-unset
+        v-model="selectedDates"
+        :first-day-of-week="`${currentTheme.firstDayOfWeek}`"
+        :color="`${currentTheme.color}-8`"
+        :class="`bg-${currentTheme.color}-6`"
+        class="calendar"
+      />
+      <div class="row relative-position">
+        <div class="col-6 range_time">
+          <div class="row justify-center range_date">{{ from.date }}</div>
+          <div class="row justify-center range_time_contour">
+            <time-component scroll
+              v-model="from.hours"
+              :max="23"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+            <span class="time_separator">:</span>
+            <time-component scroll
+              v-model="from.minutes"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+            <span class="time_separator">:</span>
+            <time-component scroll
+              v-model="from.seconds"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+          </div>
+        </div>
+        <div class="date_separator">&mdash;</div>
+        <div class="col-6 range_time">
+          <div class="row justify-center range_date">{{ to.date }}</div>
+          <div class="row justify-center range_time_contour">
+            <time-component scroll
+              v-model="to.hours"
+              :max="23"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+            <span class="time_separator">:</span>
+            <time-component scroll
+              v-model="to.minutes"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+            <span class="time_separator">:</span>
+            <time-component scroll
+              v-model="to.seconds"
+              :color="`${currentTheme.color}`"
+              class="range_time_component"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="dateRangeMode === DATE_RANGE_MODE_DAY" style="min-width: 299px;">
+      <q-date minimal square flat bordered no-unset
+        v-model="selectedDates"
+        :first-day-of-week="`${currentTheme.firstDayOfWeek}`"
+        :color="`${currentTheme.color}-8`"
+        :class="`bg-${currentTheme.color}-6`"
+        class="calendar"
+      />
+    </div>
+    <div v-if="dateRangeMode === DATE_RANGE_MODE_MANUAL" class="full-width q-px-md" style="min-width: 299px;">
+      <q-btn-toggle flat spread
+        v-model="manualFormat"
+        class="q-mb-sm"
+        :options="manualOptions"
+        :color="currentTheme.color"
+        :toggle-text-color="`${currentTheme.color}-3`"
+        :text-color="`${currentTheme.color}-10`"
+      />
       <template v-if="manualFormat === MANUAL_FORMAT">
-        <q-input v-model="manualFrom" debounce="300" class="q-field--with-bottom" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense mask="##/##/#### ##:##:##" fill-mask="0" :key="0"/>
-        <q-input v-model="manualTo" debounce="300" class="q-field--with-bottom" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense mask="##/##/#### ##:##:##" fill-mask="0" :key="1"/>
+        <q-input outlined dense
+          v-model="manualFrom"
+          debounce="500"
+          class="q-field--with-bottom"
+          label="From"
+          :color="`${currentTheme.color}`"
+          :bg-color="`${currentTheme.color}-1`"
+          :label-color="`${currentTheme.color}`"
+          mask="####/##/## ##:##:##"
+          fill-mask="0"
+          :key="0"
+        />
+        <q-input outlined dense
+          v-model="manualTo"
+          debounce="500"
+          class="q-field--with-bottom"
+          label="To"
+          :color="`${currentTheme.color}`"
+          :bg-color="`${currentTheme.color}-1`"
+          :label-color="`${currentTheme.color}`"
+          mask="####/##/## ##:##:##"
+          fill-mask="0"
+          :key="1"
+        />
       </template>
       <template v-else-if="manualFormat === MANUAL_TIMESTAMP">
-        <q-input v-model.number="timestampFrom" type="number" label="From" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="2" :rules="[val => validateTimestamps(val)]"/>
-        <q-input v-model.number="timestampTo" type="number" label="To" outlined :bg-color="currentTheme.color" :color="currentTheme.bgColor" dense :key="3" :rules="[val => validateTimestamps(val)]"/>
+        <q-input outlined dense
+          v-model.number="timestampFrom"
+          type="number"
+          label="From"
+          :color="`${currentTheme.color}`"
+          :bg-color="`${currentTheme.color}-1`"
+          :label-color="`${currentTheme.color}`"
+          :key="2"
+          :rules="[val => validateTimestampsRule(val)]"
+        />
+        <q-input outlined dense
+          v-model.number="timestampTo"
+          type="number"
+          label="To"
+          :color="`${currentTheme.color}`"
+          :bg-color="`${currentTheme.color}-1`"
+          :label-color="`${currentTheme.color}`"
+          :key="3"
+          :rules="[val => validateTimestampsRule(val)]"
+        />
       </template>
     </div>
-    <template v-else>
-      <div class="time-range-input__wrapper q-mb-sm">
-        <flat-pickr
-          v-model="currentDateRangeModel"
-          @update:range="currentDateRangeModelChangeHandler"
-          :config="dateRangeConfig"
-          :theme="currentTheme"
-        />
-      </div>
-      <div v-if="dateRangeMode === DATE_RANGE_MODE_CURRENT" class="time-range-input__wrapper q-mb-sm row">
-        <div class="time-range-input__time wrapper__begin col-5">
-          <div class="time__label" :class="[`text-${currentTheme.color}`]">{{formatDate(currentDateRangeModel[0].valueOf(), 'DD/MM/YYYY')}}</div>
-          <flat-pickr
-            v-model="currentBeginTime"
-            @update:modelValue="beginTimeChangeHandler"
-            :config="timeConfig"
-            :theme="currentTheme"
-          />
-        </div>
-        <div class="col-2 text-center" :class="[`text-${currentTheme.color}`]" style="line-height: 31px; font-size: 1.4rem; padding-top: 22px;">&ndash;</div>
-        <div class="time-range-input__time wrapper__end col-5">
-          <div class="time__label" :class="[`text-${currentTheme.color}`]">{{currentDateRangeModel[1] ? formatDate(currentDateRangeModel[1].valueOf(), 'DD/MM/YYYY') : formatDate(Date.now(), 'DD/MM/YYYY')}}</div>
-          <flat-pickr
-            v-model ="currentEndTime"
-            @update:modelValue="endTimeChangeHandler"
-            :config="timeConfig"
-            :theme="currentTheme"
-          />
-        </div>
-      </div>
-    </template>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { date } from 'quasar'
-import flatPickr from './FlatPickr.vue'
-import * as WeekSelect from 'flatpickr/dist/plugins/weekSelect/weekSelect.js'
-import * as MonthSelect from 'flatpickr/dist/plugins/monthSelect/index.js'
-import * as ScrollPlugin from 'flatpickr/dist/plugins/scrollPlugin.js'
-import 'flatpickr/dist/plugins/monthSelect/style.css'
+import TimeComponent from './TimeComponent.vue'
 
 const DATE_RANGE_MODE_DAY = 0,
-  DATE_RANGE_MODE_WEEK = 1,
-  DATE_RANGE_MODE_MONTH = 2,
-  DATE_RANGE_MODE_CURRENT = 3,
-  DATE_RANGE_MODE_MANUAL = 4,
-  MANUAL_FORMAT = 0,
-  MANUAL_TIMESTAMP = 1
+      DATE_RANGE_MODE_RANGE = 1,
+      DATE_RANGE_MODE_MANUAL = 2,
+      MANUAL_FORMAT = 0,
+      MANUAL_TIMESTAMP = 1
+
+const { extractDate, formatDate } = date
+
+const defaultTheme = {
+  color: 'pink',
+  firstDayOfWeek: 1,
+  modeSwitch: true,
+  timeScrolls: true
+}
 
 export default defineComponent({
   name: 'DateRangePicker',
+  components: {
+    TimeComponent
+  },
   props: {
+    mode: {
+      type: Number,
+      default () { return DATE_RANGE_MODE_RANGE },
+      validator (mode) {
+        return [0, 1, 2].includes(mode)
+      }
+    },
     modelValue: {
       type: Array,
       required: true,
-      default () { return [Date.now()] }
-    },
-    mode: {
-      type: Number,
-      default () { return DATE_RANGE_MODE_DAY },
-      validator (mode) {
-        return [0, 1, 2, 3, 4].includes(mode)
+      default () {
+        const currentTimestamp = Math.floor(Date.now() / 1000)
+        return [currentTimestamp - 86399, currentTimestamp]
+      },
+      validator (modelValue) {
+        return modelValue.length === 2 && typeof modelValue[0] === 'number' && typeof modelValue[1] === 'number'
       }
     },
     theme: {
       type: Object,
       default () {
-        return {
-          color: 'grey-9',
-          bgColor: 'white',
-          modeSwitch: true
-        }
+        return defaultTheme
+      }
+    }
+  },
+  computed: {
+    manualFrom: {
+      get () {
+        return formatDate(this.modelValue[0] * 1000, 'YYYY/MM/DD HH:mm:ss')
+      },
+      set (from) {
+        const dateFromDate = extractDate(from, 'YYYY/MM/DD HH:mm:ss')
+        const timestampFrom = +formatDate(dateFromDate, 'X')
+        this.from = Object.assign(this.from, this.decomposeTimestampToModelValues(timestampFrom))
+        this.syncSelectedDates()
+      }
+    },
+    manualTo: {
+      get () {
+        return formatDate(this.modelValue[1] * 1000, 'YYYY/MM/DD HH:mm:ss')
+      },
+      set (to) {
+        const dateToDate = extractDate(to, 'YYYY/MM/DD HH:mm:ss')
+        const timestampTo = +formatDate(dateToDate, 'X')
+        this.to = Object.assign(this.to, this.decomposeTimestampToModelValues(timestampTo))
+        this.syncSelectedDates()
+      }
+    },
+    timestampFrom: {
+      get () {
+        return this.modelValue[0]
+      },
+      set (from) {
+        this.from = Object.assign(this.from, this.decomposeTimestampToModelValues(from))
+        this.syncSelectedDates()
+      }
+    },
+    timestampTo: {
+      get () {
+        return this.modelValue[1]
+      },
+      set (to) {
+        this.to = Object.assign(this.to, this.decomposeTimestampToModelValues(to))
+        this.syncSelectedDates()
       }
     }
   },
   data () {
-    const currentDateRangeModel = this.modelValue.map(timestamp => new Date(timestamp))
-    const defaultTheme = {
-      color: 'grey-9',
-      bgColor: 'white',
-      modeSwitch: true
-    }
     const currentTheme = Object.assign({}, defaultTheme, this.theme)
     const dateRangeMode = currentTheme.modeSwitch ? this.getModeByRange(this.modelValue) : this.mode
-    const dateRangeConfig = this.getConfigByMode(dateRangeMode)
+    const selectedDates = this.initSelectedDates(dateRangeMode)
     return {
-      defaultTheme,
       currentTheme,
-      currentDateRangeModel,
-      dateRangeConfig,
-      timeConfig: {
-        enableTime: true,
-        noCalendar: true,
-        time_24hr: true,
-        enableSeconds: true,
-        inline: true,
-        minuteIncrement: 1
-      },
-      currentBeginTime: currentDateRangeModel[0],
-      currentEndTime: currentDateRangeModel[1],
       dateRangeMode,
       dateRangeModeOptions: [
         { label: 'Day', value: DATE_RANGE_MODE_DAY },
-        { label: 'Week', value: DATE_RANGE_MODE_WEEK },
-        { label: 'Month', value: DATE_RANGE_MODE_MONTH },
-        { label: 'Range', value: DATE_RANGE_MODE_CURRENT },
+        { label: 'Range', value: DATE_RANGE_MODE_RANGE },
         { label: 'Manual', value: DATE_RANGE_MODE_MANUAL }
       ],
       DATE_RANGE_MODE_DAY,
-      DATE_RANGE_MODE_WEEK,
-      DATE_RANGE_MODE_MONTH,
-      DATE_RANGE_MODE_CURRENT,
+      DATE_RANGE_MODE_RANGE,
       DATE_RANGE_MODE_MANUAL,
       MANUAL_FORMAT,
       MANUAL_TIMESTAMP,
@@ -135,258 +251,164 @@ export default defineComponent({
         { label: 'Format', value: MANUAL_FORMAT },
         { label: 'Timestamp', value: MANUAL_TIMESTAMP }
       ],
-      manualFormat: MANUAL_FORMAT
-    }
-  },
-  computed: {
-    manualFrom: {
-      get () {
-        return this.dateToManual(this.currentDateRangeModel[0])
+      manualFormat: MANUAL_FORMAT,
+      selectedDates,
+      from: {
+        date: formatDate(this.modelValue[0] * 1000, 'YYYY/MM/DD'),
+        hours: formatDate(this.modelValue[0] * 1000, 'HH'),
+        minutes: formatDate(this.modelValue[0] * 1000, 'mm'),
+        seconds: formatDate(this.modelValue[0] * 1000, 'ss')
       },
-      set (from) {
-        from = this.manualToDate(from)
-        from.setMilliseconds(0)
-        this.currentDateRangeModel[0] = from
-        this.update()
-      }
-    },
-    manualTo: {
-      get () {
-        return this.dateToManual(this.currentDateRangeModel[1])
+      to: {
+        date: formatDate(this.modelValue[1] * 1000, 'YYYY/MM/DD'),
+        hours: formatDate(this.modelValue[1] * 1000, 'HH'),
+        minutes: formatDate(this.modelValue[1] * 1000, 'mm'),
+        seconds: formatDate(this.modelValue[1] * 1000, 'ss')
       },
-      set (to) {
-        to = this.manualToDate(to)
-        to.setMilliseconds(999)
-        this.currentDateRangeModel[1] = to
-        this.update()
-      }
-    },
-    timestampFrom: {
-      get () {
-        return Math.floor(this.currentDateRangeModel[0].valueOf() / 1000)
-      },
-      set (from) {
-        from = Math.floor(from)
-        from = from * 1000
-        this.currentDateRangeModel[0] = new Date(from)
-        this.update()
-      }
-    },
-    timestampTo: {
-      get () {
-        return Math.floor(this.currentDateRangeModel[1].valueOf() / 1000)
-      },
-      set (to) {
-        to = Math.floor(to)
-        to = ((to + 1) * 1000) - 1
-        this.currentDateRangeModel[1] = new Date(to)
-        this.update()
-      }
-    },
-    hasError () {
-      return this.checkErrors()
-    }
-  },
-  methods: {
-    formatDate: date.formatDate,
-    checkErrors () {
-      const result = this.currentDateRangeModel[1] <= this.currentDateRangeModel[0] ||
-        (this.manualFormat === MANUAL_TIMESTAMP &&
-        (this.timestampFrom > 9999999999 || this.timestampTo > 9999999999))
-      this.$emit('error', result)
-      return result
-    },
-    dateRangeModeChange (mode) {
-      this.dateRangeMode = mode
-      this.dateRangeConfig = this.getConfigByMode(mode)
-      let currentDateRangeModel = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
-      this.currentBeginTime = currentDateRangeModel[0]
-      this.currentEndTime = currentDateRangeModel[1]
-      this.currentDateRangeModel = currentDateRangeModel
-      this.$emit('change:mode', mode)
-      this.update()
-    },
-    getConfigByMode (mode) {
-      let config = {
-        inline: true,
-        locale: {
-          firstDayOfWeek: 1
-        },
-        plugins: [ new ScrollPlugin() ]
-      }
-      if (mode === DATE_RANGE_MODE_DAY) {
-        config.mode = 'single'
-      } else if (mode === DATE_RANGE_MODE_WEEK) {
-        config.plugins.push(new WeekSelect({}))
-      } else if (mode === DATE_RANGE_MODE_MONTH) {
-        config.plugins.push(new MonthSelect({}))
-      } else if (mode === DATE_RANGE_MODE_CURRENT) {
-        config.mode = 'range'
-      }
-      return config
-    },
-    update () {
-      let value = this.getValue(this.currentDateRangeModel, this.dateRangeMode)
-      if (!value) { return }
-      value = value.map(date => date.valueOf())
-      if (value) { this.$emit('update:modelValue', value) }
-      this.$nextTick(this.checkErrors)
-    },
-    getModeByRange (range) {
-      const dates = range.map(date => new Date(date.valueOf()))
-      const isDayRange = range[0].valueOf() === dates[0].setHours(0, 0, 0, 0).valueOf()
-        && range[1].valueOf() === dates[1].setHours(23, 59, 59, 999).valueOf()
-      if (isDayRange) {
-        if (range[1] - range[0] === 86399999) {
-          return DATE_RANGE_MODE_DAY
-        } else if (range[1] - range[0] === 604799999) {
-          return DATE_RANGE_MODE_WEEK
-        } else {
-          let date = new Date(range[0].valueOf() + 86400000),
-            y = date.getUTCFullYear(),
-            m = date.getUTCMonth()
-          let firstday = new Date(y, m, 1)
-          firstday.setHours(0, 0, 0, 0)
-          let lastday = new Date(y, m + 1, 1)
-          lastday.setHours(0, 0, 0, 0)
-          lastday = new Date(lastday - 1)
-          if (range[0].valueOf() === firstday.valueOf() && range[1].valueOf() === lastday.valueOf()) {
-            return DATE_RANGE_MODE_MONTH
-          } else {
-            return DATE_RANGE_MODE_CURRENT
-          }
-        }
-      } else {
-        return DATE_RANGE_MODE_CURRENT
-      }
-    },
-    getValue (range, mode) {
-      range = range.map(date => new Date(date.valueOf()))
-      if (mode === DATE_RANGE_MODE_DAY) {
-        let curr = range[0]
-        let start = new Date(curr.setHours(0, 0, 0, 0))
-        let end = new Date(curr.setHours(23, 59, 59, 999))
-        range = [start, end]
-      } else if (mode === DATE_RANGE_MODE_WEEK) {
-        let getCurr = () => new Date(range[0].valueOf())
-        let curr = getCurr()
-        let currentDay = curr.getDay()
-        if (this.dateRangeConfig.locale && this.dateRangeConfig.locale.firstDayOfWeek) {
-          let firstDayOfWeek = this.dateRangeConfig.locale.firstDayOfWeek
-          currentDay = currentDay ? currentDay - firstDayOfWeek : 6
-        }
-        let first = curr.getDate() - currentDay
-        let last = curr.getDate() + (6 - currentDay)
-        let firstday = new Date(getCurr().setDate(first))
-        firstday.setHours(0, 0, 0, 0)
-        let lastday = new Date(getCurr().setDate(last))
-        lastday.setHours(23, 59, 59, 999)
-        range = [firstday, lastday]
-      } else if (mode === DATE_RANGE_MODE_MONTH) {
-        let date = new Date(range[0].valueOf() + 86400000),
-          y = date.getUTCFullYear(),
-          m = date.getUTCMonth()
-        let firstday = new Date(y, m, 1)
-        firstday.setHours(0, 0, 0, 0)
-        let lastday = new Date(y, m + 1, 1)
-        lastday.setHours(0, 0, 0, 0)
-        lastday = new Date(lastday - 1)
-        range = [firstday, lastday]
-      } else if (mode === DATE_RANGE_MODE_CURRENT) {
-        let begin = this.currentBeginTime
-        let end = this.currentEndTime
-        let first = range[0]
-        let last = range[1]
-        if (!first || !last || !begin || !end) { return undefined }
-        first.setHours(begin.getHours(), begin.getMinutes(), begin.getSeconds(), 0)
-        last.setHours(end.getHours(), end.getMinutes(), end.getSeconds())
-        range = [first, last]
-      }
-      return range
-    },
-    currentDateRangeModelChangeHandler (range) {
-      range = this.getValue(range, this.dateRangeMode)
-      if (!range) { return }
-      this.currentBeginTime = range[0]
-      this.currentEndTime = range[1]
-      this.currentDateRangeModel = range
-      this.update()
-    },
-    beginTimeChangeHandler (val) {
-      this.currentBeginTime = val
-      this.update()
-    },
-    endTimeChangeHandler (val) {
-      this.currentEndTime = val
-      this.update()
-    },
-    manualToDate (timestring) {
-      const [date, time] = timestring.split(' ')
-      const [day, month, year] = date.split('/')
-      const [hours, minutes, seconds] = time.split(':')
-      const result = new Date()
-      result.setMonth(month - 1)
-      result.setYear(year)
-      result.setHours(hours)
-      result.setMinutes(minutes)
-      result.setSeconds(seconds)
-      result.setDate(day)
-      return result
-    },
-    dateToManual (d) {
-      return date.formatDate(d, 'DD/MM/YYYY HH:mm:ss')
-    },
-    validateTimestamps (val) {
-      return (val <= 9999999999 && val === Math.abs(val))
-        || 'Wrong timestamp'
     }
   },
   watch: {
-    modelValue (newValue, oldValue) {
-      if (
-        Array.isArray(newValue) && Array.isArray(oldValue) &&
-        newValue.every((val, index) => val && oldValue[index] && Math.floor(val.valueOf() / 1000) === Math.floor(oldValue[index].valueOf() / 1000))
-      ) { return }
-      if (newValue.valueOf() === oldValue.valueOf()) { return false }
-      let currentDateRangeModel = newValue.map(timestamp => new Date(timestamp))
-      this.currentBeginTime = currentDateRangeModel[0]
-      this.currentEndTime = currentDateRangeModel[1]
-      this.currentDateRangeModel = currentDateRangeModel
+    from: {
+      deep: true,
+      handler () {
+        this.updateModel()
+      }
     },
-    mode: {
-      handler  (mode, oldMode) {
-        if (mode === oldMode) { return }
-        this.dateRangeModeChange(mode)
+    to: {
+      deep: true,
+      handler () {
+        this.updateModel()
+      }
+    },
+    selectedDates (newValue) {
+      if (newValue) {
+        if (typeof newValue === 'string') {
+          // "2024/12/12"
+          this.from.date = this.to.date = newValue
+        } else if (typeof newValue === 'object' && newValue.from && newValue.to) {
+          // {"from":"2024/12/06","to":"2024/12/07"}
+          this.from.date = newValue.from
+          this.to.date = newValue.to
+        }
+        this.updateModel()
       }
     },
     theme (theme) {
-      this.currentTheme = Object.assign({}, this.defaultTheme, theme)
-    }
+      this.currentTheme = Object.assign({}, defaultTheme, theme)
+    },
   },
-  components: { flatPickr }
+  methods: {
+    dateRangeModeChanged (mode) {
+      this.dateRangeMode = mode
+      this.$emit('change:mode', mode)
+      if (mode === DATE_RANGE_MODE_DAY) {
+        // update v-model of qDate component to show one day
+        this.selectedDates = this.from.date
+        // update time from and time to to be 00:00:00 - 23:59:59
+        this.from.hours = this.from.minutes =  this.from.seconds = '00'
+        this.to.hours = '23'
+        this.to.minutes = this.to.seconds = '59'
+        this.updateModel()
+      }
+    },
+    decomposeTimestampToModelValues(timestamp) {
+      const timestampMs = timestamp * 1000
+      return {
+        date: formatDate(timestampMs, 'YYYY/MM/DD'),
+        hours: formatDate(timestampMs, 'HH'),
+        minutes: formatDate(timestampMs, 'mm'),
+        seconds: formatDate(timestampMs, 'ss')
+      }
+    },
+    getModeByRange (range) {
+      const fromComponents = this.decomposeTimestampToModelValues(range[0])
+      const toComponents = this.decomposeTimestampToModelValues(range[1])
+      if (fromComponents.date !== toComponents.date) {
+        return DATE_RANGE_MODE_RANGE
+      }
+      if (fromComponents.hours === '00' && fromComponents.minutes === '00' && fromComponents.seconds === '00' &&
+          toComponents.hours === '23' && toComponents.minutes === '59' && toComponents.seconds === '59') {
+        return DATE_RANGE_MODE_DAY
+      }
+      return DATE_RANGE_MODE_RANGE
+    },
+    initSelectedDates (dateRangeMode) {
+      // initialize selectedDates field as v-model for qDate component
+      if (dateRangeMode === DATE_RANGE_MODE_DAY) {
+        // if just one date is selected - string in format 'YYYY/MM/DD'
+        return formatDate(this.modelValue[0] * 1000, 'YYYY/MM/DD')
+      }
+      if (dateRangeMode === DATE_RANGE_MODE_RANGE) {
+        const dateFrom = formatDate(this.modelValue[0] * 1000, 'YYYY/MM/DD')
+        const dateTo = formatDate(this.modelValue[1] * 1000, 'YYYY/MM/DD')
+        if (dateFrom === dateTo) {
+          // if just one date is selected - string in format 'YYYY/MM/DD'
+          return dateFrom
+        }
+        // if date range is selected - object in format {from: 'YYYY/MM/DD', to: 'YYYY/MM/DD'}
+        return { from: dateFrom, to: dateTo }
+      }
+    },
+    syncSelectedDates () {
+      // sync qDate v-model with the currently selected date
+      if (this.from.date === this.to.date) {
+        this.selectedDates = this.from.date
+      } else {
+        this.selectedDates = {
+          from:  this.from.date,
+          to: this.to.date
+        }
+      }
+    },
+    updateModel () {
+      // update component's modelValue: [timestampFrom, timestampTo]
+      const dateFromDate = extractDate(this.from.date, 'YYYY/MM/DD')
+      const dateToDate = extractDate(this.to.date, 'YYYY/MM/DD')
+      dateFromDate.setHours(+this.from.hours, +this.from.minutes, +this.from.seconds)
+      dateToDate.setHours(+this.to.hours, +this.to.minutes, +this.to.seconds)
+      const timestampFrom = +formatDate(dateFromDate, 'X')
+      const timestampTo = +formatDate(dateToDate, 'X')
+      this.$nextTick(() => {
+        // adjust timestamp sp that To always was bigger than From, and add 0.999 ms to the end timestamp to cope with backend issue
+        this.$emit('update:modelValue', (timestampTo > timestampFrom) ? [timestampFrom, timestampTo + 0.999] : [timestampTo, timestampFrom + 0.999])
+      })
+    },
+    validateTimestampsRule (val) {
+      return (val <= 9999999999 && val === Math.abs(val))
+        || 'Wrong timestamp'
+    }
+  }
 })
 </script>
 
 <style lang="sass">
-.date-range-wrapper:after
-  content: ''
+.outer_contour
+  border-radius: 3px 3px 6px 6px
+  overflow: hidden
+.calendar
+  width: 299px
+.range_date
+  width: 100%
+  text-align: center
+  font-size: 0.9em
+  font-weight: bold
+.range_time
+  padding: 0
+.range_time_contour
+  margin: auto
+  padding: 1px
+.range_time_component
+  padding: 0
+  width: 40px
+  height: 30px
+.time_separator
+  height: 40px
+  color: black
+  line-height: 40px
+  font-weight: bold
+.date_separator
+  font-weight: bold
   position: absolute
-  left: 42%
-  top: 100%
-  width: 0
-  height: 0
-  border-left: 20px solid transparent
-  border-right: 20px solid transparent
-  border-top: 20px solid #e8e8e8
-  clear: both
-.time-range-input__wrapper
-  .time-range-input__time
-    .flatpickr-calendar
-      width: 100%
-    .time__label
-      font-size: .8rem
-      font-weight: bold
-      padding-left: 5px
-  input[data-input]
-    display: none
+  top: 30px
+  left: 140px
 </style>

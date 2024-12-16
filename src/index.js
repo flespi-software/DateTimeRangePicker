@@ -1,8 +1,11 @@
+
+import DateTimePicker from './components/DateTimePicker.vue'
 import DateRangePicker from './components/DateRangePicker.vue'
-import VueFlatPickr from './components/FlatPickr.vue'
+import DateRangeModal from './components/DateRangeModal.vue'
 
 export {
+  DateTimePicker,
   DateRangePicker,
-  VueFlatPickr
+  DateRangeModal
 }
 export default DateRangePicker
