@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.1] - 2024-12-16
+[fix] fixed interval import of components
+
 ### [5.0.0] - 2024-12-16
 [update] project re-built on the base of quasar qDate component instead of flatpickr
 

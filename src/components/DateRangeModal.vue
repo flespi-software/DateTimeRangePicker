@@ -65,7 +65,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { date, debounce } from 'quasar'
-import DateRangePicker from 'src/components/DateRangePicker.vue'
+import DateRangePicker from './DateRangePicker.vue'
 
 const { formatDate } = date
 
