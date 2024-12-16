@@ -4,7 +4,7 @@
     ref="input"
     mask="##"
     input-style="text-align: center"
-    :bg-color="`${color}`"
+    :bg-color="`${color}-3`"
     :rules="[ validationRule ]"
     @blur="onBlur"
   />

@@ -4,29 +4,29 @@
 			v-model="selectedDate"
 			:first-day-of-week="`${currentTheme.firstDayOfWeek}`"
 			:color="`${currentTheme.color}-8`"
-			:class="`bg-${currentTheme.color}-6`"
+			:class="`bg-${currentTheme.color}-3`"
 			class="calendar"
 			/>
-			<div class="row" :class="`bg-${currentTheme.color}-6`">
+			<div class="row" :class="`bg-${currentTheme.color}-3`">
         <time-component
           v-model="hours"
           :max="23"
           :scroll="`${currentTheme.timeScrolls}` ? true : false"
-          :color="`${currentTheme.color}-6`"
+          :color="`${currentTheme.color}`"
           class="time_component"
         />
 				<span class="separator">:</span>
         <time-component
           v-model="minutes"
           :scroll="`${currentTheme.timeScrolls}` ? true : false"
-          :color="`${currentTheme.color}-6`"
+          :color="`${currentTheme.color}`"
           class="time_component"
         />
 				<span class="separator">:</span>
         <time-component
           v-model="seconds"
           :scroll="`${currentTheme.timeScrolls}` ? true : false"
-          :color="`${currentTheme.color}-6`"
+          :color="`${currentTheme.color}`"
           class="time_component"
         />
 			</div>

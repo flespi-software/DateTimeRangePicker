@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.3] - 2024-12-16
+[fix] component's colors are made lighter
+
 ### [5.0.2] - 2024-12-16
 [fix] added max-width for the DateRangePicker component
 

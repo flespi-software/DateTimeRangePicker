@@ -1,10 +1,10 @@
 <template>
-  <div :class="`bg-${currentTheme.color}-6`" class="outer_contour">
+  <div :class="`bg-${currentTheme.color}-3`" class="outer_contour">
     <div class="text-center q-my-sm" v-if="currentTheme.modeSwitch">
       <q-btn-toggle flat dense spread
         v-model="dateRangeMode"
         :options="dateRangeModeOptions"
-        :toggle-text-color="`${currentTheme.color}-3`"
+        :toggle-text-color="`${currentTheme.color}-6`"
         :text-color="`${currentTheme.color}-10`"
         @update:model-value="dateRangeModeChanged"
       />
@@ -14,7 +14,7 @@
         v-model="selectedDates"
         :first-day-of-week="`${currentTheme.firstDayOfWeek}`"
         :color="`${currentTheme.color}-8`"
-        :class="`bg-${currentTheme.color}-6`"
+        :class="`bg-${currentTheme.color}-3`"
         class="calendar"
       />
       <div class="row relative-position">
@@ -72,7 +72,7 @@
         v-model="selectedDates"
         :first-day-of-week="`${currentTheme.firstDayOfWeek}`"
         :color="`${currentTheme.color}-8`"
-        :class="`bg-${currentTheme.color}-6`"
+        :class="`bg-${currentTheme.color}-3`"
         class="calendar"
       />
     </div>
@@ -82,7 +82,7 @@
         class="q-mb-sm"
         :options="manualOptions"
         :color="currentTheme.color"
-        :toggle-text-color="`${currentTheme.color}-3`"
+        :toggle-text-color="`${currentTheme.color}-6`"
         :text-color="`${currentTheme.color}-10`"
       />
       <template v-if="manualFormat === MANUAL_FORMAT">
