@@ -385,6 +385,7 @@ export default defineComponent({
 .outer_contour
   border-radius: 3px 3px 6px 6px
   overflow: hidden
+  max-width: 300px
 .calendar
   width: 299px
 .range_date
