@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.5] - 2025-01-06
+[update] icons migrated to mdi
+
 ### [5.0.4] - 2024-12-16
 [fix] readme screenshot updated
 

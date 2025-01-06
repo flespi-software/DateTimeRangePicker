@@ -1,7 +1,7 @@
 <template>
   <div class="q-v-date-range-picker on-left" style="min-width: 180px">
     <q-btn flat dense
-      icon="keyboard_arrow_left"
+      icon="mdi-chevron-left"
       @click="prevHandler">
       <q-tooltip>Previous time range</q-tooltip>
     </q-btn>
@@ -19,7 +19,7 @@
     </q-btn>
 
     <q-btn flat dense
-      icon="keyboard_arrow_right"
+      icon="mdi-chevron-right"
       @click="nextHandler">
       <q-tooltip>Next time range</q-tooltip>
     </q-btn>
@@ -174,7 +174,7 @@ export default defineComponent({
 
 <style lang="sass">
 .q-v-date-range-picker
-  .q-btn__wrapper
+  .q-btn--dense
     padding-left: 0
     padding-right: 0
 .modal-date-range
