@@ -1,5 +1,5 @@
 <template>
-  <div class="q-v-date-range-picker on-left" style="min-width: 180px">
+  <div class="q-v-date-range-picker on-left">
     <q-btn flat dense
       icon="mdi-chevron-left"
       @click="prevHandler">
@@ -174,9 +174,14 @@ export default defineComponent({
 
 <style lang="sass">
 .q-v-date-range-picker
+  width: 180px
+  height: 46px
+  margin: 1px 0 1px 5px
   .q-btn--dense
     padding-left: 0
     padding-right: 0
+  .q-btn__content
+    padding: 4px 0 4px 0
 .modal-date-range
   .q-dialog__inner--minimized
     padding: 6px
