@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.9] - 2025-02-17
+[fix] fixed emitted events
+
 ### [5.0.8] - 2025-02-17
 [update] README updated
 
