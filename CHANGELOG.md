@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.7] - 2025-02-17
+[update] configurable custom button added for DateRangeModal component
+
 ### [5.0.6] - 2025-02-14
 [update] fixed styles for DateRangeModal component
 

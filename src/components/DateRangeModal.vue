@@ -42,18 +42,28 @@
             />
           </div>
         </q-card-section>
-        <q-card-actions align="right" :class="{[`bg-${theme.color}-5`]: true}">
-          <q-btn flat
+        <q-card-actions :align="currentTheme.button ? 'between' : 'right'" :class="{[`bg-${theme.color}-5`]: true}">
+          <q-btn flat dense
+            v-if="currentTheme.button"
+            :icon="currentTheme.button.icon ? currentTheme.button.icon : ''"
+            :label="currentTheme.button.label ? currentTheme.button.label : ''"
             :color="`${theme.color}-10`"
-            @click="$refs.dateRangePickerModal.hide()">
-              close
+            @click="$emit('custom-button-click'), currentTheme.button.closeModal ? $refs.dateRangePickerModal.hide() : () => {}">
+            <q-tooltip v-if="currentTheme.button.tooltip">{{ currentTheme.button.tooltip }}</q-tooltip>
           </q-btn>
-          <q-btn flat
-            :color="`${theme.color}-10`"
-            @click="dateRangeModalApply"
-            :disable="applyDisabled">
-              apply
-            </q-btn>
+          <div>
+            <q-btn flat
+              label="close"
+              :color="`${theme.color}-10`"
+              @click="$refs.dateRangePickerModal.hide()"
+            />
+            <q-btn flat
+              label="apply"
+              :color="`${theme.color}-10`"
+              @click="dateRangeModalApply"
+              :disable="applyDisabled"
+            />
+          </div>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -83,6 +93,9 @@ export default defineComponent({
   components: {
     DateRangePicker
   },
+  emits: [
+    'custom-button-click'
+  ],
   props: {
     modelValue: {
       type: Array,  // [timestampFrom, timestampTo], ms

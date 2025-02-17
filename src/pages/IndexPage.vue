@@ -74,7 +74,7 @@
         <div>[{{interval4[0]}}, {{interval4[1]}}]</div>
         <div>{{intervalFormatted4[0]}}</div>
         <div>{{intervalFormatted4[1]}}</div>
-        <date-range-picker v-model="interval4" :modeSwitch="false" :mode="2" :theme="{color: 'brown', modeSwitch: false}"/>
+        <date-range-picker v-model="interval4" :mode="2" :theme="{color: 'brown', modeSwitch: false}"/>
       </div>
       <div class="flex flex-center column" style="margin: 3px">
         <div>[{{interval5[0]}}, {{interval5[1]}}]</div>
@@ -106,7 +106,7 @@
         <div>[{{modalRange4[0]}}, {{modalRange4[1]}}]</div>
         <div>{{modalRangeFomatted4[0]}}</div>
         <div>{{modalRangeFomatted4[1]}}</div>
-        <date-range-modal v-model="modalRange4" :theme="{color: 'brown'}"/>
+        <date-range-modal v-model="modalRange4" :theme="themeWithButton"/>
       </div>
       <div class="flex flex-center column" style="min-width: 300px; min-height: 300px; background-color: #e91e63; margin: 3px">
         <div>[{{modalRange5[0]}}, {{modalRange5[1]}}]</div>
@@ -125,6 +125,16 @@ import DateTimePicker from 'src/components/DateTimePicker.vue'
 import DateRangePicker from 'src/components/DateRangePicker.vue'
 import DateRangeModal from 'src/components/DateRangeModal.vue'
 
+const themeWithButton = {
+  color: 'brown',
+  button: {
+    closeModal: true,
+    icon: 'mdi-airballoon-outline',
+    label: 'My label',
+    tooltip: 'This is tooltip for my custom button'
+  }
+}
+
 export default defineComponent({
   name: 'PageIndex',
   data () {
@@ -137,6 +147,7 @@ export default defineComponent({
         'grey', 'blue-grey', 'teal', 'brown', 'pink', 'green', 'yellow', 'red', 'blue', 'light-blue', 'indigo', 'purple', 'deep-purple', 'cyan', 'orange', 'deep-orange', 'amber'
       ],
       selectedColor: 'orange',
+      themeWithButton,
       timestamp1: currentTimestamp,
       timestamp2: currentTimestamp,
       timestamp3: currentTimestamp,

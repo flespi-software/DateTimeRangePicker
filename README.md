@@ -127,7 +127,7 @@ The component fires these events:
 ```html
 <template>
   <div>
-    <date-range-modal v-model="interval" :theme="{color: 'grey'}"/>
+    <date-range-modal v-model="interval" :theme="myTheme"/>
   </div>
 </template>
 
@@ -135,10 +135,21 @@ The component fires these events:
   import { DateRangeModal } from 'datetimerangepicker'
   import { defineComponent } from 'vue'
 
+  const myTheme = {
+    color: 'grey',
+    button: {
+      closeModal: true,
+      icon: 'mdi-airballoon-outline',
+      label: 'My label',
+      tooltip: 'This is tooltip for my custom button'
+    }
+  }
+
   export default defineComponent({
     data () {
       const currentTimestamp = Date.now()
       return {
+        myTheme,
         interval: [currentTimestamp - 86399999, currentTimestamp]
       }
     },
@@ -155,7 +166,7 @@ The component accepts these props:
 | Attribute             | Type                                            | Default              | Description           |
 | :---                  | :---:                                           | :---:                | :---                  |
 | v-model / modelValue  | Array                                           | `[Date.now() - 86399000, Date.now()]` | Timestams range in millisecond (required) |
-| theme                 | Object                                           | `{color:'grey', firstDayOfWeek:1, modeSwitch:true, timeScrolls: true}` | `color` - overall component's color, from quasar color palette, `firstDayOfWeek` - first date of the week for qDate component, `modeSwitch` - show switch mode buttons, `timeScrolls` - enable/disable scrolling for hours, minutes and seconds inputs |
+| theme                 | Object                                           | `{color:'grey', firstDayOfWeek:1, modeSwitch:true, timeScrolls: true}` | `color` - overall component's color, from quasar color palette, `firstDayOfWeek` - first date of the week for qDate component, `modeSwitch` - show switch mode buttons, `timeScrolls` - enable/disable scrolling for hours, minutes and seconds inputs, `button` - add custom button with the following settings: `closeModal` - close modal when button is clicked, `icon` - button icon, `label` - button label, `tooltip` - button tooltip |
 
 ### Available events
 The component fires these events:
