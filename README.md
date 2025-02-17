@@ -123,6 +123,7 @@ The component fires these events:
 
 ![Screenshot](/misc/DateRangeModal.png?raw=true "DateRangeModal buttons")
 ![Screenshot](/misc/DateRangeModalOpened.png?raw=true "DateRangeModal dialog opened")
+![Screenshot](/misc/DateRangeModalWithButon.png?raw=true "DateRangeModal dialog with button opened")
 
 ```html
 <template>
