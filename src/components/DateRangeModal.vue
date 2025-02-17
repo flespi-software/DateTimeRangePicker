@@ -48,7 +48,7 @@
             :icon="currentTheme.button.icon ? currentTheme.button.icon : ''"
             :label="currentTheme.button.label ? currentTheme.button.label : ''"
             :color="`${theme.color}-10`"
-            @click="$emit('custom-button-click'), currentTheme.button.closeModal ? $refs.dateRangePickerModal.hide() : () => {}">
+            @click="$emit('click:customButton'), currentTheme.button.closeModal ? $refs.dateRangePickerModal.hide() : () => {}">
             <q-tooltip v-if="currentTheme.button.tooltip">{{ currentTheme.button.tooltip }}</q-tooltip>
           </q-btn>
           <div>
@@ -94,7 +94,8 @@ export default defineComponent({
     DateRangePicker
   },
   emits: [
-    'custom-button-click'
+    'click:customButton',
+    'update:modelValue'
   ],
   props: {
     modelValue: {

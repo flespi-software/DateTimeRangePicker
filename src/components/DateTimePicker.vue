@@ -50,6 +50,7 @@ export default defineComponent({
   components: {
     TimeComponent
   },
+  emits: ['update:modelValue'],
   props: {
     modelValue: {
       type: Number,

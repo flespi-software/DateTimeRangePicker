@@ -162,6 +162,7 @@ export default defineComponent({
   components: {
     TimeComponent
   },
+  emits: ['change:mode', 'update:modelValue'],
   props: {
     mode: {
       type: Number,

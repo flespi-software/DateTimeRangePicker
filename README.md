@@ -175,6 +175,7 @@ The component fires these events:
 | Event              | Payload Type  | Description      |
 | :---               | :---:         | :---             |
 | update:modelValue  | Array        | Selected timestamps' range (in millisecond)  |
+| click:customButton | -            | Custom button clicked |
 
 ## License
 [MIT](LICENSE) License
