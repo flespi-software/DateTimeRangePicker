@@ -147,12 +147,8 @@ export default defineComponent({
   },
   methods: {
     dateRangeModalApply () {
-      // convert to ms
-      const from = this.interval[0] * 1000
-      // in range mode add 999 ms for proper time ranges flipping
-      const to = this.interval[1] * 1000 + (this.mode == 1 ? 999 : 0)
-      // update v-model of the parent component with newly selected interval
-      this.updateModel([from, to])
+      // convert to ms and update v-model of the parent component with newly selected interval
+      this.updateModel([this.interval[0] * 1000, this.interval[1] * 1000])
       // close the modal
       this.$refs.dateRangePickerModal.hide()
     },
