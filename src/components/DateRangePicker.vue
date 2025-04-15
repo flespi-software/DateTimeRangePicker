@@ -370,7 +370,7 @@ export default defineComponent({
       const timestampFrom = +formatDate(dateFromDate, 'X')
       const timestampTo = +formatDate(dateToDate, 'X')
       this.$nextTick(() => {
-        // adjust timestamp sp that To always was bigger than From, and add 0.999 ms to the end timestamp to cope with backend issue
+        // adjust timestamp so that To always was bigger than From, and add 0.999 ms to the end timestamp to cope with backend issue
         this.$emit('update:modelValue', (timestampTo > timestampFrom) ? [timestampFrom, timestampTo + 0.999] : [timestampTo, timestampFrom + 0.999])
       })
     },

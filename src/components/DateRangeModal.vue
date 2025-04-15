@@ -166,7 +166,7 @@ export default defineComponent({
     prevHandler () {
       // calculate delta in ms to display the same interval of time back to the past
       const delta = this.modelValue[1] - this.modelValue[0] // ms
-      // subtrack one ms from the current begin of the interval to avoid overlapping of time intervals
+      // subtract one ms from the current begin of the interval to avoid overlapping of time intervals
       const newTo = this.modelValue[0] - 1 // ms
       const newFrom = newTo - delta
       // update interval to be displayed by the DateRangePicker

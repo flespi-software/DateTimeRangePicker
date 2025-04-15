@@ -139,6 +139,7 @@ export default defineComponent({
   name: 'PageIndex',
   data () {
     const currentTimestamp = Math.floor(Date.now() / 1000)
+    const currentDate = new Date().setHours(0, 0, 0, 0)
     return {
       modalTimestampRange: [currentTimestamp * 1000 - 86399999, currentTimestamp * 1000],
       timestampRange: [currentTimestamp - 86399, currentTimestamp],
@@ -162,7 +163,7 @@ export default defineComponent({
       modalRange2: [currentTimestamp * 1000 - 86399999, currentTimestamp * 1000],
       modalRange3: [currentTimestamp * 1000 - 86399999, currentTimestamp * 1000],
       modalRange4: [currentTimestamp * 1000 - 86399999, currentTimestamp * 1000],
-      modalRange5: [currentTimestamp * 1000 - 86399999, currentTimestamp * 1000],
+      modalRange5: [currentDate, currentDate + 86399999],
       mode: 0
     }
   },
