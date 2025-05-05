@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.13] - 2025-05-05
+[fix] fixed update of time component value
+
 ### [5.0.12] - 2025-05-05
 [fix] fixed processing of external update of modelValue for DateRangeModal component
 

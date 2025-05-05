@@ -86,10 +86,10 @@ export default defineComponent({
         return
       }
       if (value < 10) {
-        this.input = this.timeComponent = '0' + event.target.value
+        this.input = this.timeComponent = '0' + value
         return
       }
-      this.timeComponent = event.target.value
+      this.timeComponent = '' + value
     },
     onLongTouch () {
       this.touchClientY = 0
