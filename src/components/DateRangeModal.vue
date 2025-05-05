@@ -141,6 +141,11 @@ export default defineComponent({
     this.debouncedUpdateModel = debounce(this.updateModel, 300)
   },
   watch: {
+    modelValue () {
+      const timestampFrom = Math.floor(this.modelValue[0] / 1000)
+      const timestampTo = Math.floor(this.modelValue[1] / 1000)
+      this.interval = [timestampFrom, timestampTo]
+    },
     theme (theme) {
       this.currentTheme = Object.assign({}, this.defaultTheme, theme)
     }

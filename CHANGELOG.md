@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### [5.0.12] - 2025-05-05
+[fix] fixed processing of external update of modelValue for DateRangeModal component
+
 ### [5.0.11] - 2025-04-15
 [update] updated time range for one example on index page
 
